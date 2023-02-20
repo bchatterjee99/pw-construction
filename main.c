@@ -22,7 +22,7 @@ void draw_test()
 int main()
 {
     draw_init();
-    draw_grid(100);
+    draw_grid(1057);
 
     char ch = fgetc(stdin);
     printf("\n\n  thikache\n\n");

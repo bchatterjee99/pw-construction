@@ -32,12 +32,17 @@ void grid_test()
 int main()
 {
     draw_init();
-    find_LJ_mult();
-    find_Points();
-    find_Orbits();
-    plane_draw_Orbits();
-    draw_update();
+    create_plane();
+    /* find_LJ_mult(); */
+    /* find_Points(); */
+    /* find_Orbits(); */
+    // plane_draw_Orbits();
+    /* plane_draw_Orbits_grouped(); */
+    /* plane_draw_line(0xff); */
+    /* draw_update(); */
+    plane_animate_random_lines();
     char ch = fgetc(stdin);
+    destroy_plane();
 
     printf("\n\n  thikache\n\n");
     return 0;

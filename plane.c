@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "field.h"
+#include "draw.h"
 #include "grid.h"
 
 #define M_order 32768
@@ -13,6 +15,7 @@
 #define Num_Points 1057 // M_mult_order / L_mult_order
 #define M_char 2 // M characteristic
 #define M_char_power 15 // M prime power
+#define M_L_power 3 // M L extension power
 unsigned long L_mult[L_mult_order];
 unsigned long J_mult[J_mult_order];
 unsigned long Points[Num_Points]; 
@@ -112,9 +115,7 @@ void find_Orbits()
     {
 	if(Orbits[i] != -1) continue;
 	point = Points[i];
-	//Orbits[i] = Orbit_count++;
 	Orbit_count++;
-
 	for(int j=0; j<J_mult_order; j++)
 	{
 	    // phi(J*)
@@ -126,7 +127,9 @@ void find_Orbits()
 
                 // coset leader for Lb (point identifier)
 		int c = coset_leaders[b]; 
-		if(Orbits[c] == -1)
+
+		// Now: Group-Action(i'th point) -> c'th point
+		if(Orbits[c] == -1) // new point
 		{
 		    Orbits[c] = Orbit_count - 1; // place in current orbit
 		    new_Pos[c] = point_count++; // place orbit points together
@@ -147,7 +150,87 @@ void plane_draw_Orbits()
 	int o = Orbits[i];
 	if(color[o] == -1)
 	    color[o] = rand() & 0xffffff;
-	grid_fill_cell(new_Pos[i], color[o]);
+	grid_fill_cell(i, color[o]);
     }
     free(color);
+}
+
+int* color;
+void plane_draw_Orbits_grouped()
+{
+    color = (int*)malloc(Orbit_count * sizeof(int));
+    grid_draw(Num_Points);
+    for(int i=0; i<Orbit_count; i++) color[i] = -1;
+    for(int i=0; i<Num_Points; i++)
+    {
+	int o = Orbits[i];
+	if(color[o] == -1)
+	    color[o] = rand() & 0xffffff;
+	grid_fill_cell(new_Pos[i], color[o]);
+    }
+}
+
+void plane_redraw_Orbits_grouped()
+{
+    for(int i=0; i<Num_Points; i++)
+    {
+	int o = Orbits[i];
+	grid_fill_cell(new_Pos[i], color[o]);
+    }
+}
+
+unsigned long trace_M_L(unsigned long a)
+{
+    unsigned long ans = 0;
+    for(int i=0; i<M_L_power; i++)
+    {
+	unsigned long tmp = field_exponent(a, exp1(L_order, i));
+	ans = field_addition(ans, tmp);
+    }
+    return ans;
+}
+
+void plane_draw_line(unsigned long alpha)
+{
+    // alpha = Points[10];
+    int count = 0;
+    for(int i=0; i<Num_Points; i++)
+    {
+	unsigned long point = Points[i];
+	unsigned long t = trace_M_L(field_multiplication(alpha, point));
+	if(t == 0)
+	{
+	    grid_mark_cell(new_Pos[i]);
+	    count++;
+	}
+	/* grid_mark_cell(i * 5); */
+	/* if(i >= counter) break; */
+    }
+    printf("points on line: %d\n\n", count);
+}
+
+void create_plane()
+{
+    find_LJ_mult();
+    find_Points();
+    find_Orbits();
+}
+
+void destroy_plane()
+{
+    free(color);
+}
+
+void plane_animate_random_lines()
+{
+    plane_draw_Orbits_grouped();
+    int counter = 20;
+    while(counter--)
+    {
+	unsigned long alpha = rand() % M_order;
+	plane_redraw_Orbits_grouped();
+	plane_draw_line(alpha);
+	draw_update();
+	sleep(1);
+    }
 }

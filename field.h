@@ -6,22 +6,20 @@
 // K := GF(2)
 
 
-#define SIZE 15
-#define PRIMITIVE 0x8003 // x^15 + x + 1
 
 
-unsigned int polynomial_addition(unsigned int a, unsigned int b);
+unsigned long polynomial_addition(unsigned long a, unsigned long b);
 
-unsigned int polynomial_multiplication(unsigned int a, unsigned int b);
+unsigned long polynomial_multiplication(unsigned long a, unsigned long b);
 
-unsigned int field_addition(unsigned int a, unsigned int b);
+unsigned long field_addition(unsigned long a, unsigned long b);
 
-int deg(unsigned int a);
+int deg(unsigned long a);
 
-unsigned int shift(unsigned int a, int s);
+unsigned long shift(unsigned long a, int s);
 
-unsigned int modulo(unsigned int a);
+unsigned long modulo(unsigned long a);
 
-unsigned int field_multiplication(unsigned int a, unsigned int b);
+unsigned long field_multiplication(unsigned long a, unsigned long b);
 
-unsigned int field_exponent(unsigned int a, int power);
+unsigned long field_exponent(unsigned long a, int power);

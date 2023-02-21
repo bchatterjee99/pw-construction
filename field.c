@@ -6,18 +6,21 @@
 // J := GF(2^3)
 // K := GF(2)
 
+#define SIZE 15
+#define PRIMITIVE 0x8003 // x^15 + x + 1
 
-unsigned int polynomial_addition(unsigned int a, unsigned int b)
+
+unsigned long polynomial_addition(unsigned long a, unsigned long b)
 {
-    unsigned int ans = a ^ b;
+    unsigned long ans = a ^ b;
     return ans;
 }
 
-unsigned int polynomial_multiplication(unsigned int a, unsigned int b)
+unsigned long polynomial_multiplication(unsigned long a, unsigned long b)
 {
-    unsigned int tmp = b;
-    unsigned int ans = 0;
-    unsigned int shifted_a = (unsigned int)a;
+    unsigned long tmp = b;
+    unsigned long ans = 0;
+    unsigned long shifted_a = (unsigned long)a;
     for(int i=0; i<SIZE; i++)
     {
 	//printf("poly-mult, i: %d, shifted_a: %4x\n", i, shifted_a);
@@ -30,33 +33,33 @@ unsigned int polynomial_multiplication(unsigned int a, unsigned int b)
 }	
 
 
-unsigned int field_addition(unsigned int a, unsigned int b)
+unsigned long field_addition(unsigned long a, unsigned long b)
 {
-    unsigned int ans = a ^ b;
+    unsigned long ans = a ^ b;
     return ans;
 }
 
-int deg(unsigned int a)
+int deg(unsigned long a)
 {
     int i = 2*SIZE - 1;
     while(i >= 0)
     {
-	unsigned int tmp = (1 << i);
+	unsigned long tmp = (1 << i);
 	if(a & tmp) return i;
 	i--;
     }
     return 0;
 }
 
-unsigned int shift(unsigned int a, int s)
+unsigned long shift(unsigned long a, int s)
 {
-    unsigned int ans = a << s;
+    unsigned long ans = a << s;
     return ans;
 }
 
-unsigned int modulo(unsigned int a)
+unsigned long modulo(unsigned long a)
 {
-    unsigned int primitive = PRIMITIVE; 
+    unsigned long primitive = PRIMITIVE; 
     // printf("modulo start\n");
     /* printf("deg(a): %d\n", deg(a)); */
     /* printf("deg(primitive): %d\n", deg(primitive)); */
@@ -68,18 +71,25 @@ unsigned int modulo(unsigned int a)
     return a;
 }
 
-unsigned int field_multiplication(unsigned int a, unsigned int b)
+unsigned long field_multiplication(unsigned long a, unsigned long b)
 {
-    unsigned int prod = polynomial_multiplication(a, b);
+    unsigned long prod = polynomial_multiplication(a, b);
     // printf("polynomial mult: %x\n", prod);
     unsigned ans = modulo(prod);
     return ans;
 }
 
-unsigned int field_exponent(unsigned int a, int power)
+unsigned long field_exponent(unsigned long a, int power)
 {
-    unsigned int ans = 1;
-    while(power--)
-	ans = field_multiplication(ans, a);
+    unsigned long ans = 1;
+    /* while(power--) */
+    /* 	ans = field_multiplication(ans, a); */
+    while(power > 0)
+    {
+	if(power & 1)
+	    ans = field_multiplication(ans, a);
+	a = field_multiplication(a, a);
+	power = power >> 1;
+    }
     return ans;
 }

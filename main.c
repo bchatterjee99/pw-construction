@@ -3,6 +3,7 @@
 #include "field.h"
 #include "draw.h"
 #include "grid.h"
+#include "plane.h"
 
 void field_test()
 {
@@ -19,12 +20,25 @@ void draw_test()
     draw_end();
 }
 
+void grid_test()
+{
+    draw_init();
+    grid_draw(1057);
+    grid_fill_cell(1056,0xff0000);
+    draw_update();
+    char ch = fgetc(stdin);
+}
+
 int main()
 {
     draw_init();
-    draw_grid(1057);
-
+    find_LJ_mult();
+    find_Points();
+    find_Orbits();
+    plane_draw_Orbits();
+    draw_update();
     char ch = fgetc(stdin);
+
     printf("\n\n  thikache\n\n");
     return 0;
 }

@@ -4,7 +4,7 @@
 int SCREEN_WIDTH = 1120;
 int SCREEN_HEIGHT = 630;
 
-#define POS_X 240
+#define POS_X 210
 #define POS_Y 50
 
 SDL_Window* window;

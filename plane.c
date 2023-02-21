@@ -239,19 +239,21 @@ void plane_animate_random_lines()
 void plane_animate_Orbit_lines(int orbit)
 {
     plane_draw_Orbits_grouped();
-    int counter = 10; int idx = 0;
+    int counter = 100; int idx = 0;
     while(counter--)
     {
-	// unsigned long alpha = rand() % M_order;
+	// pick next line from orbit
 	while(Orbits[idx] != orbit) idx++;
 	unsigned long alpha = Points[idx]; // Point represntative => line representative
 	idx++; // skip point
+	idx = idx % Num_Points; // restart 
+
 	printf("line: 0x%02x\n\n", alpha);
 	plane_redraw_Orbits_grouped();
 	plane_draw_line(alpha);
 	draw_update();
 	if(key_press()) break;
-	sleep(2);
+	usleep(700000);
     }
 }
 

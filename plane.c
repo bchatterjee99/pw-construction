@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "field.h"
+#include "keyboard.h"
 #include "draw.h"
 #include "grid.h"
 
@@ -206,7 +207,7 @@ void plane_draw_line(unsigned long alpha)
 	/* grid_mark_cell(i * 5); */
 	/* if(i >= counter) break; */
     }
-    printf("points on line: %d\n\n", count);
+    // printf("points on line: %d\n\n", count);
 }
 
 void create_plane()
@@ -224,13 +225,48 @@ void destroy_plane()
 void plane_animate_random_lines()
 {
     plane_draw_Orbits_grouped();
-    int counter = 20;
+    int counter = 30;
     while(counter--)
     {
 	unsigned long alpha = rand() % M_order;
 	plane_redraw_Orbits_grouped();
 	plane_draw_line(alpha);
 	draw_update();
-	sleep(1);
+	sleep(2);
+    }
+}
+
+void plane_animate_Orbit_lines(int orbit)
+{
+    plane_draw_Orbits_grouped();
+    int counter = 10; int idx = 0;
+    while(counter--)
+    {
+	// unsigned long alpha = rand() % M_order;
+	while(Orbits[idx] != orbit) idx++;
+	unsigned long alpha = Points[idx]; // Point represntative => line representative
+	idx++; // skip point
+	printf("line: 0x%02x\n\n", alpha);
+	plane_redraw_Orbits_grouped();
+	plane_draw_line(alpha);
+	draw_update();
+	if(key_press()) break;
+	sleep(2);
+    }
+}
+
+
+int bit_count(int x)
+{
+    int ans = 0;
+    while(x > 0) { ans = ans + (x & 1); x = x >> 1; }
+    return ans;
+}
+void find_good_Orbit_Subset()
+{
+    for(int i=0; i<1024; i++)
+    {
+	int b = bit_count(i);
+	if(b != 5) continue;
     }
 }

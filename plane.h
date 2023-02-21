@@ -17,3 +17,5 @@ void plane_draw_Orbits_grouped();
 void plane_draw_line(unsigned long alpha);
 
 void plane_animate_random_lines();
+
+void plane_animate_Orbit_lines(int orbit);

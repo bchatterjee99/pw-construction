@@ -33,15 +33,7 @@ int main()
 {
     draw_init();
     create_plane();
-    /* find_LJ_mult(); */
-    /* find_Points(); */
-    /* find_Orbits(); */
-    // plane_draw_Orbits();
-    /* plane_draw_Orbits_grouped(); */
-    /* plane_draw_line(0xff); */
-    /* draw_update(); */
-    plane_animate_random_lines();
-    char ch = fgetc(stdin);
+    plane_animate_Orbit_lines(2);
     destroy_plane();
 
     printf("\n\n  thikache\n\n");

@@ -232,7 +232,8 @@ void plane_animate_random_lines()
 	plane_redraw_Orbits_grouped();
 	plane_draw_line(alpha);
 	draw_update();
-	sleep(2);
+	if(key_press()) break;
+	usleep(1000000);
     }
 }
 
@@ -253,7 +254,7 @@ void plane_animate_Orbit_lines(int orbit)
 	plane_draw_line(alpha);
 	draw_update();
 	if(key_press()) break;
-	usleep(700000);
+	usleep(1000000);
     }
 }
 

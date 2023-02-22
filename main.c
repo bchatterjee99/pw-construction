@@ -33,7 +33,8 @@ int main()
 {
     draw_init();
     create_plane();
-    plane_animate_Orbit_lines(2);
+    plane_animate_random_lines();
+    // plane_animate_Orbit_lines(2);
     destroy_plane();
 
     printf("\n\n  thikache\n\n");

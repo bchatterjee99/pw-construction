@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "field.h"
+#include "field15.h"
 #include "keyboard.h"
 #include "draw.h"
 #include "grid.h"
@@ -233,7 +233,7 @@ void plane_animate_random_lines()
 	plane_draw_line(alpha);
 	draw_update();
 	if(key_press()) break;
-	usleep(1000000);
+	sleep(2);
     }
 }
 
@@ -254,7 +254,7 @@ void plane_animate_Orbit_lines(int orbit)
 	plane_draw_line(alpha);
 	draw_update();
 	if(key_press()) break;
-	usleep(1000000);
+	sleep(2);
     }
 }
 

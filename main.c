@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "field.h"
+#include "field15.h"
 #include "draw.h"
 #include "grid.h"
-#include "plane.h"
+#include "plane15.h"
 
 void field_test()
 {
@@ -33,8 +33,8 @@ int main()
 {
     draw_init();
     create_plane();
-    plane_animate_random_lines();
-    // plane_animate_Orbit_lines(2);
+    // plane_animate_random_lines();
+    plane_animate_Orbit_lines(2);
     destroy_plane();
 
     printf("\n\n  thikache\n\n");

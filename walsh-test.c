@@ -14,7 +14,7 @@ int main()
 
     input_matrix(C, "C.txt", &n);
     mult_vector(C, b, c, n);
-    show_vector(c, n, "A*b: ");
+    show_vector(c, n, "C*b: ");
 
     long T21 = ((long) 1) << 21;
     long T42 = ((long) 1) << 42;
@@ -39,17 +39,11 @@ int main()
 	// mult orbit * coset size
 	long tmp = w_coeff_square * 127;
 	if(i == 0)
-	{
 	    tmp = tmp * 1 * 7;   
-	}
 	else if(i == 93 || i == 114)
-	{
 	    tmp = tmp * 3 * 7;
-	}
 	else
-	{
 	    tmp = tmp * 21 * 7;
-	}
 	ans = ans + tmp;
 	// printf("i = %d  num_func: %ld\n", i, num_func);
     }
@@ -68,7 +62,7 @@ int main()
     printf("2^21 = %ld\n", T21);
     printf("\n\n");
 
-    printf("Case 15: %ld\n", 10 * (105 * 31) + 7 * 31);
+    printf("Case 15 num_func: %ld\n", 10 * (105 * 31) + 7 * 31);
     printf("2^15: %ld\n", ((long)1) << 15);
     printf("\n\n");
 

@@ -2,25 +2,26 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "field15.h"
+#include "field21.h"
 #include "keyboard.h"
 #include "draw.h"
 #include "grid.h"
 
-#define M_order 32768
-#define L_order 32
+#define M_order 2097152
+#define L_order 128
 #define J_order 8
-#define M_mult_order 32767
-#define L_mult_order 31
+#define M_mult_order 2097151
+#define L_mult_order 127
 #define J_mult_order 7
-#define Num_Points 1057 // M_mult_order / L_mult_order
+#define Num_Points 16513 // M_mult_order / L_mult_order
 #define M_char 2 // M characteristic
-#define M_char_power 15 // M prime power
+#define M_char_power 21 // M prime power
 #define M_L_power 3 // M L extension power
 unsigned long L_mult[L_mult_order];
 unsigned long J_mult[J_mult_order];
 unsigned long Points[Num_Points]; 
 int coset_leaders[M_order]; 
+char arr[M_order]; // marking array
 int Orbits[Num_Points];
 int Orbit_count;
 // rearrange points to group orbits together
@@ -61,38 +62,85 @@ int find_order(unsigned long a)
 void find_LJ_mult()
 {
     int L_count = 0, J_count = 0;
-    for(unsigned long i=1; i<M_order; i++)
+    unsigned long primitive = 0x2; // x
+    unsigned long L_generator = field_exponent(primitive, M_mult_order / L_mult_order);
+    unsigned long J_generator = field_exponent(primitive, M_mult_order / J_mult_order);
+
+    unsigned long tmp;
+    for(int i=0; i<L_mult_order; i++)
     {
-	int order = find_order(i);
-	if(L_mult_order % order == 0)
-	    L_mult[L_count++] = i;
-	if(J_mult_order % order == 0)
-	    J_mult[J_count++] = i;
+	tmp = field_exponent(L_generator, i);
+	L_mult[L_count++] = tmp;
+    }
+    for(int i=0; i<J_mult_order; i++)
+    {
+	tmp = field_exponent(J_generator, i);
+	J_mult[J_count++] = tmp;
+    }
+
+    // check
+    L_count = 0;
+    for(int i=0; i<L_mult_order; i++)
+    {
+	int repeat = 0;
+	for(int j=0; j<i; j++)
+	    if(L_mult[i] == L_mult[j])
+		repeat = 1;
+	if(repeat == 0) L_count++;
+    }
+    J_count = 0;
+    for(int i=0; i<J_mult_order; i++)
+    {
+	int repeat = 0;
+	for(int j=0; j<i; j++)
+	    if(J_mult[i] == J_mult[j])
+		repeat = 1;
+	if(repeat == 0) J_count++;
     }
     printf("L-count = %d  J-count = %d\n\n", L_count, J_count);
 }
 
+// merge a[0...n] and b[0...m] into c[]
+void merge(unsigned long a[], int n, unsigned long b[], int m, unsigned long c[])
+{
+    unsigned long* tmp = (unsigned long *)malloc((m + n) * sizeof(unsigned long));
+    int i = 0, j = 0;
+    int idx = 0;
+    while(i < n || j < m)
+    {
+	if(i >= n) { tmp[idx++] = b[j++]; }
+	else if(j >= m) { tmp[idx++] = a[i++]; }
+	else if(a[i] <= b[j]) { tmp[idx++] = a[i++]; }
+	else { tmp[idx++] = b[j++]; }
+    }
+    for(int i=0; i<m+n; i++)
+	c[i] = tmp[i];
+    free(tmp);
+}
+void merge_sort_Points(unsigned long arr[], int l, int r)
+{
+    if(r == l) return;
+    int mid = (l + r)/2;
+    merge_sort_Points(arr, l, mid);
+    merge_sort_Points(arr, mid+1, r);
+    merge(arr + l, mid - l + 1, arr + mid + 1, r - mid, arr + l);
+}
 void find_Points()
 {
-    int arr[M_order];
-    for(int i=0; i<M_order; i++) arr[i] = 0;
-    coset_leaders[0] = 0;
+    unsigned long primitive = 0x2; // x
+    for(int i=0; i<Num_Points; i++)
+	Points[i] = field_exponent(primitive, i);
 
-    int count = 0;
-    for(unsigned long i=1; i<M_order; i++)
-    {
-        // field element seen in earlier coset
-	if(arr[i] == 1) continue; 
-
-	Points[count++] = i;
-	for(int j=0; j<L_mult_order; j++) // includes identity
-	{
-	    unsigned long tmp = field_multiplication(i, L_mult[j]);
-	    arr[tmp] = 1;
-	    coset_leaders[tmp] = count-1; // leader er index
-	}
-    }
-    printf("Point count = %d\n\n", count);
+    // sort check
+    merge_sort_Points(Points, 0, Num_Points - 1);
+    /* printf("Points:\n"); */
+    /* for(int i=0; i<Num_Points; i++) */
+    /* 	printf("%d: %ld\n", i, Points[i]); */
+    /* printf("\n\n"); */
+    int count = 0; if(Num_Points > 0) count++;
+    for(int i=1; i<Num_Points; i++)
+	if(Points[i] != Points[i-1]) count++;
+    printf("Point count: %d\n\n", count);
 }
 
 int exp1(int a, int b)
@@ -214,7 +262,7 @@ void create_plane()
 {
     find_LJ_mult();
     find_Points();
-    find_Orbits();
+    // find_Orbits();
 }
 
 void destroy_plane()
@@ -255,21 +303,5 @@ void plane_animate_Orbit_lines(int orbit)
 	draw_update();
 	if(key_press()) break;
 	sleep(2);
-    }
-}
-
-
-int bit_count(int x)
-{
-    int ans = 0;
-    while(x > 0) { ans = ans + (x & 1); x = x >> 1; }
-    return ans;
-}
-void find_good_Orbit_Subset()
-{
-    for(int i=0; i<1024; i++)
-    {
-	int b = bit_count(i);
-	if(b != 5) continue;
     }
 }

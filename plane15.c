@@ -140,34 +140,46 @@ void find_Orbits()
     }
     printf("Orbit Count: %d point_count: %d\n\n", Orbit_count, point_count);
 }
-
-void plane_draw_Orbits()
+void show_Orbit_sizes()
 {
-    int *color = (int*)malloc(Orbit_count * sizeof(int));
-    grid_draw(Num_Points);
-    for(int i=0; i<Orbit_count; i++) color[i] = -1;
+    int *count = (int*)malloc(Orbit_count*sizeof(int));
+    for(int i=0; i<Orbit_count; i++) count[i] = 0;
+
     for(int i=0; i<Num_Points; i++)
-    {
-	int o = Orbits[i];
-	if(color[o] == -1)
-	    color[o] = rand() & 0xffffff;
-	grid_fill_cell(i, color[o]);
-    }
-    free(color);
+	count[Orbits[i]]++;
+
+    printf("Orbit sizes:\n");
+    for(int i=0; i<Orbit_count; i++)
+	printf("Orbit %d size: %d\n", i, count[i]);
+    printf("\n\n");
+    free(count);
 }
 
-int* color;
-void plane_draw_Orbits_grouped()
+int* orbit_color;
+void plane_draw_Orbits()
 {
-    color = (int*)malloc(Orbit_count * sizeof(int));
+    orbit_color = (int*)malloc(Orbit_count * sizeof(int));
     grid_draw(Num_Points);
-    for(int i=0; i<Orbit_count; i++) color[i] = -1;
+    for(int i=0; i<Orbit_count; i++) orbit_color[i] = -1;
     for(int i=0; i<Num_Points; i++)
     {
 	int o = Orbits[i];
-	if(color[o] == -1)
-	    color[o] = rand() & 0xffffff;
-	grid_fill_cell(new_Pos[i], color[o]);
+	if(orbit_color[o] == -1)
+	    orbit_color[o] = rand() & 0xffffff;
+	grid_fill_cell(i, orbit_color[o]);
+    }
+}
+void plane_draw_Orbits_grouped()
+{
+    orbit_color = (int*)malloc(Orbit_count * sizeof(int));
+    grid_draw(Num_Points);
+    for(int i=0; i<Orbit_count; i++) orbit_color[i] = -1;
+    for(int i=0; i<Num_Points; i++)
+    {
+	int o = Orbits[i];
+	if(orbit_color[o] == -1)
+	    orbit_color[o] = rand() & 0xffffff;
+	grid_fill_cell(new_Pos[i], orbit_color[o]);
     }
 }
 
@@ -176,7 +188,7 @@ void plane_redraw_Orbits_grouped()
     for(int i=0; i<Num_Points; i++)
     {
 	int o = Orbits[i];
-	grid_fill_cell(new_Pos[i], color[o]);
+	grid_fill_cell(new_Pos[i], orbit_color[o]);
     }
 }
 
@@ -215,11 +227,12 @@ void create_plane()
     find_LJ_mult();
     find_Points();
     find_Orbits();
+    show_Orbit_sizes();
 }
 
 void destroy_plane()
 {
-    free(color);
+    free(orbit_color);
 }
 
 void plane_animate_random_lines()

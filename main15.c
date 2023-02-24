@@ -31,8 +31,8 @@ void grid_test()
 
 int main()
 {
-    draw_init();
     create_plane();
+    draw_init();
     // plane_animate_random_lines();
     plane_animate_Orbit_lines(2);
     destroy_plane();

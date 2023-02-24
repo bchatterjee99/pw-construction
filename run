@@ -4,7 +4,7 @@ tput reset
 
 flags="-lSDL2 -lm"
 
-files="main.c plane15.c grid.c draw.c keyboard.c field15.c"
+#files="main15.c plane15.c grid.c draw.c keyboard.c field15.c"
 files="main.c plane21.c grid.c draw.c keyboard.c field21.c"
 
 if gcc $files $flags; then

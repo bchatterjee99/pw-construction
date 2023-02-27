@@ -7,6 +7,12 @@
 *** primitive: x^21 + x^2 + 1
 *** points: 16513
 
+* abstract
+
+Search for High-Nonlinearity Boolean Functions:
+-----------------------------------------------
+High non-linearity boolean functions have been a topic of practical interest in cryptography because of their usefulness in construction of S-boxes. They help ciphers resist against linear cryptanalysis. Theoretically, obtaining nonlinearity greater than the Bent-Concatenation bound for functions with odd number of variables has been a difficult combinatorial search problem. In 1983, Patterson and Wiedemann proved a lower bound on the covering radius of first order Reed-Muller codes of size 2^15. This also provided boolean functions on 15 variables with non-linearity greater than the Bent-Concatenation bound. Further research along similar lines has been carried out to find such functions on larger number of variables. We want to explore the Patterson-Wiedemann construction in detail and use it to find boolean functions with high nonlinearity on 21 or higher number of variables.
+
 * TODO
 ** grid.c, draw.c
 *** remove SDL-interaction from grid.c;

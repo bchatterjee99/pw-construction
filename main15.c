@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "field15.h"
-#include "draw.h"
+#include "graphics.h"
 #include "grid.h"
 #include "plane15.h"
 
@@ -13,28 +13,26 @@ void field_test()
     printf("c = 0x%x\n", c);
 }
 
-void draw_test()
-{
-    draw_init();
-    char ch = fgetc(stdin);
-    draw_end();
-}
-
 void grid_test()
 {
-    draw_init();
+    graphics_init();
     grid_draw(1057);
     grid_fill_cell(1056,0xff0000);
-    draw_update();
+    graphics_update();
     char ch = fgetc(stdin);
 }
 
 int main()
 {
+    graphics_init();
     create_plane();
-    draw_init();
+    /* plane_draw_Orbits_grouped(); */
+    /* draw_update(); */
+    /* char ch = fgetch(stdin); */
     // plane_animate_random_lines();
     plane_animate_Orbit_lines(2);
+
+    graphics_end();
     destroy_plane();
 
     printf("\n\n  thikache\n\n");

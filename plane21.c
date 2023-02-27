@@ -4,7 +4,6 @@
 
 #include "field21.h"
 #include "keyboard.h"
-#include "draw.h"
 #include "grid.h"
 #include "plane21.h"
 
@@ -324,7 +323,7 @@ void plane_animate_random_lines()
 	unsigned long alpha = rand() % M_order;
 	plane_redraw_Orbits_grouped();
 	plane_draw_line(alpha);
-	draw_update();
+	grid_update();
 	if(key_press()) break;
 	sleep(2);
     }
@@ -345,7 +344,7 @@ void plane_animate_Orbit_lines(int orbit)
 	printf("line: 0x%02x\n\n", alpha);
 	plane_redraw_Orbits_grouped();
 	plane_draw_line(alpha);
-	draw_update();
+	grid_update();
 	if(key_press()) break;
 	sleep(2);
     }

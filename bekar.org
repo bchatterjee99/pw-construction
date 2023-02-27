@@ -1,0 +1,20 @@
+#+STARTUP: overview
+* 15 variable
+*** primitive: x^15 + x + 1
+*** points: 1057
+*** orbits
+* 21 variable
+*** primitive: x^21 + x^2 + 1
+*** points: 16513
+
+* TODO
+** grid.c, draw.c
+*** remove SDL-interaction from grid.c;
+*** sob draw.c te hobe
+*** draw.c: bresenham circle drawing
+** asol orbit ?
+** plane.c
+*** draw call -> grid call
+
+
+

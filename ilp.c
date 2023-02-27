@@ -148,7 +148,7 @@ void mult_vector(long A[][200], long b[], long c[], int n)
 }
 
 // returns distance from failed constraints
-int check(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
+int check2(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
 {
     // printf("Check:\n");
     int dist = 0;
@@ -173,9 +173,8 @@ int check(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m
     return dist;
 }
 
-void check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
+int check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
 {
-    printf("Check:\n");
     int flag = 0;
     for(int i=0; i<C_n; i++)
     {
@@ -184,12 +183,11 @@ void check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C
 	    tmp = tmp + f[j] * Constraint[i][j];
 	if(tmp < b[i] || tmp > c[i])
 	{
-	    printf("constraint %d failed\n", i);
-	    printf("b = %ld, tmp = %ld, c = %ld\n\n", b[i], tmp, c[i]);
+	    /* printf("constraint %d failed\n", i); */
+	    /* printf("b = %ld, tmp = %ld, c = %ld\n\n", b[i], tmp, c[i]); */
 	    flag = 1;
 	}
     }
-    if(flag == 0) printf("passed\n");
-    else printf("failed\n");
-    printf("\n\n");
+    if(flag == 0) return 1;
+    return 0;
 }

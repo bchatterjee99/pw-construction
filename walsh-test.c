@@ -6,6 +6,18 @@ long C[200][200]; // constraint matrix
 int n;
 
 
+void num_points_on_line()
+{
+    long ans = 0;
+    for(int i=0; i<n; i++)
+    {
+	ans = 0;
+	for(int j=0; j<n; j++)
+	    ans = ans + C[i][j];
+	printf("sum[%d]: %ld\n", i, ans);
+    }
+    printf("\n\n");
+}
 
 int main()
 {
@@ -65,6 +77,8 @@ int main()
     printf("Case 15 num_func: %ld\n", 10 * (105 * 31) + 7 * 31);
     printf("2^15: %ld\n", ((long)1) << 15);
     printf("\n\n");
+
+    // num_points_on_line();
 
     printf("\n\n  thikache\n\n");
     return 0;

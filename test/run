@@ -1,0 +1,13 @@
+#-*-sh-*-
+
+
+flags="-fopenmp"
+
+files="pi.c"
+
+if gcc $files $flags; then
+    echo -e "\n\n  compile hoe geche\n\n";
+    ./a.out
+else
+    echo -e "\n\n  hocche na\n\n";
+fi

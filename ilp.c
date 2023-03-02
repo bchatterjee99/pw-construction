@@ -1,64 +1,63 @@
 #include <stdio.h>
-#include <glpk.h>
 
+/* #include <glpk.h> */
+/* // GNU linear programming kit diye */
+/* void solve(long Constraint[][200], long b[], long c[], int n, int m) */
+/* { */
+/*     glp_prob *lp; */
+/*     int ia[1+40000], ja[1+40000]; */
+/*     double ar[1+40000], z, x1, x2, x3; */
+/*     lp = glp_create_prob(); */
+/*     glp_set_prob_name(lp, "thikache"); */
 
-// GNU linear programming kit diye
-void solve(long Constraint[][200], long b[], long c[], int n, int m)
-{
-    glp_prob *lp;
-    int ia[1+40000], ja[1+40000];
-    double ar[1+40000], z, x1, x2, x3;
-    lp = glp_create_prob();
-    glp_set_prob_name(lp, "thikache");
+/*     glp_set_obj_dir(lp, GLP_MAX); */
 
-    glp_set_obj_dir(lp, GLP_MAX);
+/*     glp_add_rows(lp, n); */
+/*     for(int i=0; i<n; i++) */
+/*     { */
+/* 	if(b[i] == c[i]) */
+/* 	    glp_set_row_bnds(lp, i+1, GLP_FX, b[i], c[i]); */
+/* 	else */
+/* 	    glp_set_row_bnds(lp, i+1, GLP_DB, b[i], c[i]); */
+/*     } */
 
-    glp_add_rows(lp, n);
-    for(int i=0; i<n; i++)
-    {
-	if(b[i] == c[i])
-	    glp_set_row_bnds(lp, i+1, GLP_FX, b[i], c[i]);
-	else
-	    glp_set_row_bnds(lp, i+1, GLP_DB, b[i], c[i]);
-    }
+/*     glp_add_cols(lp, m); */
+/*     for(int j=0; j<m; j++) */
+/*     { */
+/* 	// glp_set_col_bnds(lp, j, GLP_LO, 0.0, 0.0); */
+/* 	glp_set_col_kind(lp, j+1, GLP_BV); */
+/* 	glp_set_obj_coef(lp, j+1, 1); */
+/*     } */
 
-    glp_add_cols(lp, m);
-    for(int j=0; j<m; j++)
-    {
-	// glp_set_col_bnds(lp, j, GLP_LO, 0.0, 0.0);
-	glp_set_col_kind(lp, j+1, GLP_BV);
-	glp_set_obj_coef(lp, j+1, 1);
-    }
-
-    for(int i=0; i<n; i++)
-    {
-	for(int j=0; j<m; j++)
-	{
-	    int idx = i * m  + j + 1;
-	    // printf("idx = %d,  r: %d, c: %d\n", idx, i+1, j+1);
-	    ia[idx] = i + 1;
-	    ja[idx] = j + 1;
-	    ar[idx] = Constraint[i][j];
-	}
+/*     for(int i=0; i<n; i++) */
+/*     { */
+/* 	for(int j=0; j<m; j++) */
+/* 	{ */
+/* 	    int idx = i * m  + j + 1; */
+/* 	    // printf("idx = %d,  r: %d, c: %d\n", idx, i+1, j+1); */
+/* 	    ia[idx] = i + 1; */
+/* 	    ja[idx] = j + 1; */
+/* 	    ar[idx] = Constraint[i][j]; */
+/* 	} */
 	
-    }
+/*     } */
 
-    glp_iocp parm;
-    glp_init_iocp(&parm);
-    parm.presolve = GLP_ON;
+/*     glp_iocp parm; */
+/*     glp_init_iocp(&parm); */
+/*     parm.presolve = GLP_ON; */
 
-    glp_load_matrix(lp, n*m, ia, ja, ar);
-    glp_intopt(lp, &parm);
-    z = glp_mip_obj_val(lp);
-    printf("obj val: %lf\n", z);
-    for(int j=0; j<m; j++)
-    {
-	double x = glp_mip_col_val(lp, j+1);
-	printf("x%d: %lf, ", j+1, x);
-    }
-    printf("\n\n");
-    glp_delete_prob(lp);
-}
+/*     glp_load_matrix(lp, n*m, ia, ja, ar); */
+/*     glp_intopt(lp, &parm); */
+/*     z = glp_mip_obj_val(lp); */
+/*     printf("obj val: %lf\n", z); */
+/*     for(int j=0; j<m; j++) */
+/*     { */
+/* 	double x = glp_mip_col_val(lp, j+1); */
+/* 	printf("x%d: %lf, ", j+1, x); */
+/*     } */
+/*     printf("\n\n"); */
+/*     glp_delete_prob(lp); */
+/* } */
 
 
 

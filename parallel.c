@@ -1,3 +1,4 @@
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -16,7 +17,9 @@ int m;
 #define LEN 28
 #define NUM_ONE 14
 
-#define CORES 5
+#define CORES 4
+int real_num_threads;
+long total;
 
 long ncr[60][60];
 long combinations(int n, int r)
@@ -36,10 +39,9 @@ long combinations(int n, int r)
 }
 
 
-int arr1[200];
 // find kth string of length len
 // with num_one 1's
-void generate(int len, int num_one, long k)
+void generate(int len, int num_one, long k, int arr1[])
 {
     if(num_one == 0) return;
     if(len == 0)
@@ -58,7 +60,7 @@ void generate(int len, int num_one, long k)
 	if(done + num_strings >= k) 
 	{
 	    arr1[i] = 1;
-	    generate(i, num_one - 1, k - done);
+	    generate(i, num_one - 1, k - done, arr1);
 	    break;
 	}
 	done = done + num_strings;
@@ -67,26 +69,25 @@ void generate(int len, int num_one, long k)
 
 // find next string of length LEN
 // with NUM_ONE 1's
-int arr2[200];
-void next()
+void next(int arr1[])
 {
     // find first movable 1
     int count = 0;
     for(int i=0; i<LEN-1; i++)
     {
-	if(arr2[i] == 1 && arr2[i+1] == 0)
+	if(arr1[i] == 1 && arr1[i+1] == 0)
 	{
-	    arr2[i+1] = 1;
+	    arr1[i+1] = 1;
 
 	    // put count 1s at the right
 	    for(int j=0; j<=i; j++)
-		arr2[j] = 0;
+		arr1[j] = 0;
 	    for(int j=0; j<count; j++)
-		arr2[j] = 1;
+		arr1[j] = 1;
 
 	    break;
 	}
-	else if(arr2[i] == 1)
+	else if(arr1[i] == 1)
 	    count++; // #1's seen
     }
     // no change if last possible
@@ -98,15 +99,6 @@ void show_string(int arr[])
 	printf("%d", arr[i]);
 }
 
-void init()
-{
-    for(int i=0; i<60; i++)
-	for(int j=0; j<60; j++)
-	    ncr[i][j] = -1;
-
-    for(int i=0; i<LEN; i++) arr1[i] = 0;
-    for(int i=0; i<LEN; i++) arr2[i] = 0;
-}
 
 void combinations_test()
 {
@@ -119,7 +111,10 @@ void combinations_test()
 
 void generate_test()
 {
-    generate(LEN, NUM_ONE, 1000);
+    int arr1[200];
+    for(int i=0; i<200; i++) arr1[i] = 0;
+
+    generate(LEN, NUM_ONE, 1000, arr1);
     printf("generated string:\n");
     show_string(arr1);
     printf("\n\n");
@@ -128,8 +123,9 @@ void generate_test()
 
 void next_test()
 {
+    int arr1[200];
     for(int i=0; i<NUM_ONE; i++)
-	arr2[i] = 1;
+	arr1[i] = 1;
 
     // show first few strings
     for(int i=0; i<1050; i++)
@@ -137,49 +133,49 @@ void next_test()
 	if(i+1 == 1000)
 	{
 	    printf("string %d: ", i+1);
-	    show_string(arr2);
+	    show_string(arr1);
 	    printf("\n");
 	}
-	next();
+	next(arr1);
     }
     printf("\n\n");
 }
 
-// test arr2
-void test_string()
+// test string
+void test_string(int arr1[])
 {
-    int arr3[112];
+    int arr2[112];
     int comb = 112 / LEN; // koto gulo jora hobe
     int idx = 0;
     for(int i=0; i<LEN; i++)
 	for(int j=0; j<comb; j++)
-	    arr3[idx++] = arr2[i];
+	    arr2[idx++] = arr1[i];
 
-    long arr4[115]; idx = 0;
+    long arr3[115]; idx = 0;
     for(int i=0; i<115; i++)
     {
-	if(i == 0) arr4[i] = 0;
-	else if(i == 93) arr4[i] = 1;
-	else if(i == 114) arr4[i] = 0;
+	if(i == 0) arr3[i] = 0;
+	else if(i == 93) arr3[i] = 1;
+	else if(i == 114) arr3[i] = 0;
 	else
-	    arr4[i] = arr3[idx++];
+	    arr3[i] = arr2[idx++];
     }
 
     // test string
     /* int sum = 0; */
     /* for(int i=0; i<115; i++) */
     /* { */
-    /* 	printf("%d ", arr4[i]); */
-    /* 	sum = sum + arr4[i]; */
+    /* 	printf("%d ", arr3[i]); */
+    /* 	sum = sum + arr3[i]; */
     /* } */
     /* printf("sum = %d\n\n", sum); */
 
-    int x = check1(arr4, C, b, c, n, m);
+    int x = check1(arr3, C, b, c, n, m);
     if(x == 1)
     {
 	printf("pass:\n");
 	for(int i=0; i<115; i++)
-	    printf("%d ", arr4[i]);
+	    printf("%d ", arr3[i]);
 	printf("\n\n");
 	exit(1);
     }
@@ -187,26 +183,34 @@ void test_string()
 
 // test num strings starting
 // from the kth string
-void search(int k, int num)
+void search(long k, long num)
 {
-    generate(LEN, NUM_ONE, k);
-    for(int i=0; i<LEN; i++) arr2[i] = arr1[i];
+    int arr1[200];
+    for(int i=0; i<200; i++) arr1[i] = 0;
+    generate(LEN, NUM_ONE, k, arr1);
 
     // printf("serach:\n");
-    for(int i=0; i<num; i++)
+    for(long i=0; i<num; i++)
     {
-	// show_string(arr2);
-	// printf("\n");
-	test_string();
-	next();
+	/* printf("thread %d: ", omp_get_thread_num()); */
+	/* show_string(arr1); */
+	/* printf("\n"); */
+	if((i & 0xfffff) == 0) 
+	{
+	    printf("thread %d: %ld / %ld\n", omp_get_thread_num(), i, num);
+	    show_string(arr1);
+	    printf("\n\n");
+	}
+
+	test_string(arr1);
+	next(arr1);
     }
 }
 
 void start()
 {
-    int total = combinations(LEN, NUM_ONE);
-    int per_process = total / CORES + 1;
-    int done = 0;
+    total = combinations(LEN, NUM_ONE);
+    long per_process = total / CORES + 1;
 
     int i;
     for(i=0; i<CORES; i++)
@@ -225,6 +229,42 @@ void start()
     printf("process %d end\n", getpid());
 }
 
+void start_openmp()
+{
+    total = combinations(LEN, NUM_ONE);
+    int i;
+
+    /* printf("total = %ld\n", total); */
+    /* printf("per_process: %ld\n\n", total / CORES); */
+
+    #pragma omp parallel
+    {
+	int id = omp_get_thread_num();
+	long num_threads = omp_get_num_threads();
+	long per_process = total/num_threads + 1;
+	if(id == 0)
+	{
+	    real_num_threads = num_threads;
+	    printf("num_threads: %ld\n", num_threads);
+	    printf("per_process: %ld\n\n", per_process);
+	}
+	long k = id * per_process + 1;
+	search(k, per_process);
+    }
+}
+
+void init()
+{
+    for(int i=0; i<60; i++)
+	for(int j=0; j<60; j++)
+	    ncr[i][j] = -1;
+
+    long tmp;
+    for(int i=0; i<60; i++)
+	for(int j=0; j<60; j++)
+	    tmp = combinations(i, j);
+}
+
 int main()
 {
     init();
@@ -233,7 +273,7 @@ int main()
 
     /* next_test(); */
     /* generate_test(); */
-    start();
+    start_openmp();
 
     printf("\n\n  thikache\n\n");
     return 0;

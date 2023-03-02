@@ -3,13 +3,38 @@
   compile hoe geche
 
 
-string 1000: 
+thread 0: 0000111
+thread 0: 0001011
+thread 0: 0001101
+thread 0: 0001110
+thread 0: 0010011
+thread 0: 0010101
+thread 0: 0010110
+thread 0: 0011001
+thread 3: 1001010
+thread 3: 1001100
+thread 3: 1010001
+thread 3: 1010010
+thread 3: thread 1: 100101100110thread 2: 0110001
+thread 2: 0110010
+thread 2: 
+0thread 1: 110001010
+thread 3: 01101
+0thread 2: 001111100000
+00
 
-
-generated string:
-
-0000000000101110111110011111
-0000000000101110111110011111
+thread 2: thread 3: 1001thread 1: 00110000011
+thread 2: 00011
+11thread 1: 
+thread 3: 01001100100101
+thread 1: 01
+thread 2: 100010010100011
+thread 2: 1100
+0
+thread 1: 00110100010
+1thread 1: 
+0101010
+thread 1: 0101100
 
 
   thikache

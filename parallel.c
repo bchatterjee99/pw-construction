@@ -14,6 +14,8 @@ int m;
 
 // generate LEN length strings
 // with NUM_ONE 1's
+// ...
+// Combinatorial Number System of degree NUM_ONE
 #define LEN 28
 #define NUM_ONE 14
 
@@ -41,6 +43,8 @@ long combinations(int n, int r)
 
 // find kth string of length len
 // with num_one 1's
+// ...
+// kth number in Combinatorial Number System of degree NUM_ONE
 void generate(int len, int num_one, long k, int arr1[])
 {
     if(num_one == 0) return;
@@ -69,6 +73,8 @@ void generate(int len, int num_one, long k, int arr1[])
 
 // find next string of length LEN
 // with NUM_ONE 1's
+// ...
+// next number in Combinatorial Number System of degree NUM_ONE
 void next(int arr1[])
 {
     // find first movable 1
@@ -147,10 +153,13 @@ void test_string(int arr1[])
     int arr2[112];
     int comb = 112 / LEN; // koto gulo jora hobe
     int idx = 0;
+
+    // expand to 112
     for(int i=0; i<LEN; i++)
 	for(int j=0; j<comb; j++)
 	    arr2[idx++] = arr1[i];
 
+    // fill gap
     long arr3[115]; idx = 0;
     for(int i=0; i<115; i++)
     {
@@ -173,10 +182,16 @@ void test_string(int arr1[])
     int x = check1(arr3, C, b, c, n, m);
     if(x == 1)
     {
+	FILE* fp = fopen("found.txt", "w");
 	printf("pass:\n");
 	for(int i=0; i<115; i++)
+	{
 	    printf("%d ", arr3[i]);
+	    fprintf(fp, "%d ", arr3[i]);
+	}
 	printf("\n\n");
+	fprintf(fp, "\n\n");
+	fclose(fp);
 	exit(1);
     }
 }

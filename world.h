@@ -7,6 +7,10 @@ struct object{
     int color;
 };
 
+extern int camera_x;
+extern int camera_y;
+extern int camera_z;
+
 
 void world_init(int num_objects);
 

@@ -5,6 +5,7 @@
 #include "grid.h"
 #include "world.h"
 #include "plane21.h"
+#include "controller.h"
 
 void field_test()
 {
@@ -36,7 +37,9 @@ void grahpics_circle_test()
 int main()
 {
     graphics_init();
-    create_plane();
+    world_init(10);
+    world_add_object(10, 10, 10, 700);
+    // create_plane();
     // construct_ILP();
     /* plane_draw_Orbits_grouped(); */
     /* draw_update(); */
@@ -44,7 +47,9 @@ int main()
     /* plane_animate_Orbit_lines(2); */
     /* destroy_plane(); */
 
-    // world_test();
+
+    control();
+
 
 
     // char ch = fgetc(stdin);

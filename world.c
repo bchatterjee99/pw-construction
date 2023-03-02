@@ -17,7 +17,9 @@ struct object* object_list;
 int obj_idx;
 int max_objects;
 
-int camera_x, camera_y, camera_z;
+int camera_x;
+int camera_y;
+int camera_z;
 
 
 void world_init(int num_objects)
@@ -25,6 +27,10 @@ void world_init(int num_objects)
     object_list = (struct object *)malloc(num_objects * sizeof(struct object));
     max_objects = num_objects;
     obj_idx = 0;
+
+    camera_x = 0;
+    camera_y = 0;
+    camera_z = 0;
 }
 
 void world_draw_object(int idx)
@@ -45,13 +51,16 @@ void world_draw_object(int idx)
     int screen_y = camera_coord_y / camera_coord_z;
     radius = radius / camera_coord_z;
 
+    graphics_set_color(0, 0, 0);
     graphics_midpoint_circle(screen_x, screen_y, radius);
+    graphics_set_color(255, 0, 0);
+    if(radius >= 5)
+	graphics_flood_fill(screen_x, screen_y);
 }
 
 void world_draw_world()
 {
     graphics_reset(0x000020);
-    graphics_set_color(255, 0, 0);
     for(int i=0; i<obj_idx; i++)
 	world_draw_object(i);
     graphics_update();

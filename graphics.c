@@ -4,8 +4,6 @@
 int WINDOW_WIDTH = 1120;
 int WINDOW_HEIGHT = 630;
 
-#define WINDOW_RES 5
-
 #define POS_X 210
 #define POS_Y 50
 
@@ -14,7 +12,7 @@ SDL_Renderer* renderer;
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
-int SCREEN_RES;
+#define SCREEN_RES 3
 
 int** SCREEN;
 
@@ -53,7 +51,6 @@ void graphics_init()
 {
     init_sdl();
 
-    SCREEN_RES = 5;
     SCREEN_WIDTH = WINDOW_WIDTH / SCREEN_RES;
     SCREEN_HEIGHT = WINDOW_HEIGHT / SCREEN_RES;
 
@@ -183,6 +180,7 @@ void recursive_fill(int row, int col, int old_color)
 void graphics_flood_fill(int screen_x, int screen_y)
 {
     int row, col; screen_to_rowcol_coord(screen_x, screen_y, &row, &col);
+    if(!inside_screen(row, col)) return;
     int old_color = SCREEN[row][col];
 
     // printf("flood_fill(): (%d, %d) --> (%d, %d)  old_color = 0x%x\n", screen_x, screen_y, row, col, old_color);

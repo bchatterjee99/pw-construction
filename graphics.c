@@ -134,6 +134,8 @@ void graphics_fill_box(int screen_x, int screen_y)
     int row, col;
     screen_to_rowcol_coord(screen_x, screen_y, &row, &col);
 
+    if(!inside_screen(row, col)) return;
+
     SDL_Rect cell;
     cell.x = col * SCREEN_RES;
     cell.y = row * SCREEN_RES;
@@ -141,8 +143,7 @@ void graphics_fill_box(int screen_x, int screen_y)
     cell.h = SCREEN_RES;
     SDL_RenderFillRect(renderer, &cell);
 
-    if(inside_screen(row, col))
-	SCREEN[row][col] = curr_color;
+    SCREEN[row][col] = curr_color;
 }
 // row-col coord
 void graphics_fill_cell(int row, int col) 

@@ -349,3 +349,35 @@ void plane_animate_Orbit_lines(int orbit)
 	sleep(2);
     }
 }
+
+void construct_ILP()
+{
+    // num of incident points in each orbit
+    int* Orbit_Points = (int*)malloc(Orbit_count * sizeof(int));
+
+    printf("ILP:\n");
+    for(int i=0; i<Orbit_count; i++)
+    {
+	// clear num incident points in each orbit
+	for(int j=0; j<Orbit_count; j++) Orbit_Points[j] = 0;
+
+	// find orbit representative
+	int j;
+	for(j=0; j<Num_Points; j++)
+	    if(Orbits[j] == i) break;
+	unsigned long alpha = Points[j];
+
+	for(int j=0; j<Num_Points; j++)
+	{
+	    unsigned long point = Points[j];
+	    unsigned long t = trace_M_L(field_multiplication(alpha, point));
+	    if(t == 0)
+		Orbit_Points[Orbits[j]]++;
+	}
+
+	for(int j=0; j<Orbit_count; j++)
+	    printf("%d ", Orbit_Points[j]);
+	printf("\n");
+    }
+    free(Orbit_Points);
+}

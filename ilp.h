@@ -8,6 +8,8 @@ void show_vector(long b[], int n, char* str);
 
 void show_matrix(long A[][200], int n, char* str);
 
+void show_ilp(long C[][200], long b[], long c[], int n, int m);
+
 void mult_matrix(long A[][200], long B[][200], long C[][200], int n);
 
 void mult_vector(long A[][200], long b[], long c[], int n);

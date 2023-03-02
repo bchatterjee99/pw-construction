@@ -3,6 +3,7 @@
 #include "field21.h"
 #include "graphics.h"
 #include "grid.h"
+#include "world.h"
 #include "plane21.h"
 
 void field_test()
@@ -22,26 +23,33 @@ void grid_test()
     char ch = fgetc(stdin);
 }
 
-int main()
+void grahpics_circle_test()
 {
-    graphics_init();
-    /* create_plane(); */
-    /* plane_draw_Orbits_grouped(); */
-    /* draw_update(); */
-    /* plane_animate_random_lines(); */
-    /* plane_animate_Orbit_lines(2); */
-    /* destroy_plane(); */
-
     graphics_reset(0x000020);
     graphics_set_color(0, 0, 0);
     graphics_midpoint_circle(1, 1, 20);
     graphics_set_color(255, 0, 0);
     graphics_flood_fill(1, 1);
     graphics_update();
+}
 
-    char ch = fgetc(stdin);
+int main()
+{
+    graphics_init();
+    create_plane();
+    // construct_ILP();
+    /* plane_draw_Orbits_grouped(); */
+    /* draw_update(); */
+    /* plane_animate_random_lines(); */
+    /* plane_animate_Orbit_lines(2); */
+    /* destroy_plane(); */
 
+    // world_test();
+
+
+    // char ch = fgetc(stdin);
     graphics_end();
+
     printf("\n\n  thikache\n\n");
     return 0;
 }

@@ -124,6 +124,23 @@ void show_vector(long b[], int n, char* str)
     }
     printf("\n\n");
 }
+void show_ilp(long C[][200], long b[], long c[], int n, int m)
+{
+    for(int i=0; i<n; i++)
+    {
+	for(int j=0; j<m; j++)
+	    printf("%ld ", C[i][j]);
+	printf("\n");
+    }
+    
+    printf("n = %d m = %d\n", n, m);
+    printf("b = \n");
+    for(int i=0; i<m; i++) printf("%ld ", b[i]); printf("\n");
+    printf("c = \n");
+    for(int i=0; i<m; i++) printf("%ld ", c[i]); printf("\n");
+
+    printf("\n\n");
+}
 
 void mult_matrix(long A[][200], long B[][200], long C[][200], int n)
 {
@@ -186,6 +203,7 @@ int check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_
 	    /* printf("constraint %d failed\n", i); */
 	    /* printf("b = %ld, tmp = %ld, c = %ld\n\n", b[i], tmp, c[i]); */
 	    flag = 1;
+	    return 0; // return on first fail
 	}
     }
     if(flag == 0) return 1;

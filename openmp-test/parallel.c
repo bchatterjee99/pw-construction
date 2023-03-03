@@ -4,7 +4,75 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include "ilp.h"
+
+// ilp.c --------------------------------------------------------------
+void input_constraint(long A[][200], long b[], long c[], const char* file, int* C_n, int* C_m)
+{
+    FILE* fp = fopen(file, "r");
+
+    fscanf(fp, "%d", C_n);
+    fscanf(fp, "%d", C_m);
+
+    for(int i=0; i<*C_n; i++)
+    {
+	for(int j=0; j<*C_m; j++)
+	    fscanf(fp, "%d", &A[i][j]);
+    }
+
+    for(int i=0; i<*C_n; i++)
+	fscanf(fp, "%d", &b[i]);
+
+
+    for(int i=0; i<*C_n; i++)
+	fscanf(fp, "%d", &c[i]);
+}
+void show_ilp(long C[][200], long b[], long c[], int n, int m)
+{
+    for(int i=0; i<n; i++)
+    {
+	for(int j=0; j<m; j++)
+	    printf("%ld ", C[i][j]);
+	printf("\n");
+    }
+    
+    printf("n = %d m = %d\n", n, m);
+    printf("b = \n");
+    for(int i=0; i<m; i++) printf("%ld ", b[i]); printf("\n");
+    printf("c = \n");
+    for(int i=0; i<m; i++) printf("%ld ", c[i]); printf("\n");
+
+    printf("\n\n");
+}
+void mult_vector(long A[][200], long b[], long c[], int n)
+{
+    for(int i=0; i<n; i++)
+    {
+	    c[i] = 0;
+	    for(int k=0; k<n; k++)
+		c[i] = c[i] + A[i][k] * b[k];
+    }
+}
+int check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
+{
+    int flag = 0;
+    for(int i=0; i<C_n; i++)
+    {
+	long tmp = 0;
+	for(int j=0; j<C_m; j++)
+	    tmp = tmp + f[j] * Constraint[i][j];
+	if(tmp < b[i] || tmp > c[i])
+	{
+	    /* printf("constraint %d failed\n", i); */
+	    /* printf("b = %ld, tmp = %ld, c = %ld\n\n", b[i], tmp, c[i]); */
+	    flag = 1;
+	    return 0; // return on first fail
+	}
+    }
+    if(flag == 0) return 1;
+    return 0;
+}
+// ilp.c --------------------------------------------------------------
+
 
 long C[200][200];
 long b[200];

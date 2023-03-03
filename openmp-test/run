@@ -3,7 +3,7 @@
 
 flags="-fopenmp"
 
-files="pi.c"
+files="parallel.c"
 
 if gcc $files $flags; then
     echo -e "\n\n  compile hoe geche\n\n";

@@ -8,7 +8,7 @@ int STOP;
 
 void handle_key(SDL_Keycode sym)
 {
-    int speed = 20 + (- camera_z) * 20;
+    int speed = 400 + (- camera_z) * 100;
     switch(sym)
     {
     case SDLK_h: // LEFT

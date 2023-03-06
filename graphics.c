@@ -206,6 +206,10 @@ void graphics_midpoint_circle(int centre_x, int centre_y, int radius)
     // D_i+2 = D_i+1 + 2[5 - 2x_i + 2y_i],  if D_i+1 > 0
     // D_i+2 = D_i+1 + 2[3 + 2y_i]          otherwise
 
+    int row, col;
+    screen_to_rowcol_coord(centre_x, centre_y, &row, &col);
+    if(!inside_screen(row, col)) return; // centre outside screen
+
     int D = 3 - 2*radius;
     int x = radius, y = 0;
     while(x >= y)

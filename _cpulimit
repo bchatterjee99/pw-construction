@@ -1,0 +1,4 @@
+#-*-sh-*-
+
+
+cpulimit -e a.out -l 40

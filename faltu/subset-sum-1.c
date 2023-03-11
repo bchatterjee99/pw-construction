@@ -27,6 +27,7 @@ void add1(long* a, long b)
 	*a = *a + b;
 }
 
+// number of ways to keep 4 sub-set sums inside range
 long subset_sum_range(int i, int sum1, int sum2, int sum3) 
 {
     if(i == len)
@@ -59,6 +60,8 @@ long subset_sum_range(int i, int sum1, int sum2, int sum3)
 }
 
 int dp2[115][73][57];
+// whether possible to make sum using count size subset
+// of arr[i,i+1,...n]
 int subset_sum(int i, int sum, int count)
 {
     if(i == len)
@@ -154,7 +157,7 @@ void range()
 void test2()
 {
     len = n;
-    arr1 = C[2];
+    arr1 = C[0];
     for(int i=57; i<=72; i++)
     {
 	reset_dp2();
@@ -173,9 +176,28 @@ int main()
     // test1();
     // return 0;
 
-    range();
+    test2();
 
 
     printf("\n\n  thikache\n\n");
     return 0;
 }
+
+/*
+    // calc num distinct values
+    long num_distinct = 1;
+    for(int i=116; i<=115 + 15; i++)
+	num_distinct = num_distinct * i;
+    long d = 1;
+    for(int i=1; i<=15; i++)
+	d = d * i;
+    if(num_distinct % d)
+    {
+	printf("calc_target(): 116 ... * 130 not divisible by 15!\n\n");
+	exit(1);
+    }
+    num_distinct = num_distinct / d;
+    printf("num_distinct: %ld\n", num_distinct);
+    printf("stored-distinct size: %ld\n", (num_distinct * (long)8) / exp1(2, 30));
+
+ */

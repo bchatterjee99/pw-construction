@@ -34,7 +34,8 @@ long bent_concatenation_bound()
 void init()
 {
     bent = bent_concatenation_bound();
-    TARGET_NON_LINEARITY = bent + 161;
+    TARGET_NON_LINEARITY = bent + 1;
+    // TARGET_NON_LINEARITY = bent + 161;
 }
 
 
@@ -71,9 +72,9 @@ long calc_t()
 
 void test()
 {
-    printf("Target Non-linearity:\n");
+    printf("Target Non-linearity:\n\n");
     printf("2^(%ld - 1) - 2^(%ld - 1)/2 + %ld ", N, N, TARGET_NON_LINEARITY - bent);
-    printf("= %ld\n\n", TARGET_NON_LINEARITY);
+    printf("= %ld\n\n\n\n", TARGET_NON_LINEARITY);
 
     calc_l();
     calc_t();

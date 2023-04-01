@@ -387,7 +387,7 @@ void need_RAM()
     long count = 0;
     for(int i=0; i<=112; i++)
     {
-	printf("coin %d\n", i);
+	printf("allocating memory: row %d/113\n", i);
 	for(int j=0; j<TABLE_SIZE; j++)
 	{
 	    count++;
@@ -395,6 +395,7 @@ void need_RAM()
 	    // printf("%d", table[i][j]);
 	}
     }
+    printf("\n\n");
     old_table[0][0] = 1;
     printf("size: %ld\n", count/exp1(2, 30));
 
@@ -402,6 +403,7 @@ void need_RAM()
     {
 	for(int i=0; i<=112; i++)
 	{
+	    printf("coin: %d, row: %d\n", c, i);
 	    for(int s=0; s<TABLE_SIZE; s++)
 	    {
 		table[i][s] = 0;
@@ -416,6 +418,7 @@ void need_RAM()
 	for(int i=0; i<=112; i++)
 	    copy_byte_table(table[i], old_table[i], TABLE_SIZE);
     }
+    printf("\n\n");
 
     for(int i=0; i<num_targets; i++)
     {

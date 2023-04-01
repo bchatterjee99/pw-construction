@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <gmp.h>
 
 long target;
 long l;
@@ -14,13 +13,15 @@ int num_targets;
 
 #define L_MULT 127
 
+#define LOWER 57
+#define UPPER 72
 
 /*
 
   table[i][j] :=
   No. of ways to make
   SUM[t = 0,1,..i]{ [(l - 2^a.k_t)]^2 * O_t } = j
-  by choosing k_t in [57, 72]
+  by choosing k_t in [LOWER, UPPER]
 
   table[i][j] =
   SUM[t = 57,58,...72]{ table[i-1][j - f(k, i)] }
@@ -46,7 +47,6 @@ void calc_l()
     printf("l = %ld\n\n", l);
 }
 
-
 // function f
 long f(long k, int i)
 {
@@ -66,6 +66,7 @@ long g(long k)
     return ans;
 }
 
+#define TABLE_SIZE 58900000
 void remove_small_orbit_rows()
 {
     long arr1[] = {63, 66};
@@ -82,6 +83,8 @@ void remove_small_orbit_rows()
 	    for(int k=0; k<4; k++)
 	    {
 		new_target = target - f(arr1[i], 0) - f(arr2[j], 93) - f(arr2[k], 114);
+
+		// new_target divisible by remaining orbit size
 		if(new_target % 21) continue;
 		new_target = new_target / 21;
 
@@ -99,6 +102,68 @@ void remove_small_orbit_rows()
 	    }
 	}
     }
+}
+
+// merge arr1[0..len1], arr2[0,...len2] into arr3[0,...len1+len2]
+void merge(long arr1[], int len1, long arr2[], int len2, long arr3[])
+{
+    int i = 0, j = 0;
+    long* tmp = (long*)malloc((len1 + len2)*sizeof(long));
+    long idx = 0;
+    while(i < len1 || j < len2)
+    {
+	if(i >= len1) tmp[idx++] = arr2[j++];
+	else if(j >= len2) tmp[idx++] = arr1[i++];
+	else if(arr1[i] <= arr2[j]) tmp[idx++] = arr1[i++];
+	else tmp[idx++] = arr2[j++];
+    }
+    // copy to arr3[]
+    for(int i=0; i<idx; i++)
+	arr3[i] = tmp[i];
+    free(tmp);
+}
+void merge_sort(long arr[], int len)
+{
+    if(len == 1)
+	return;
+    int mid = len / 2;
+    merge_sort(arr, mid);
+    merge_sort(arr + mid, len - mid);
+    merge(arr, mid, arr + mid, len - mid, arr);
+}
+
+#define NUM_COINS 16
+long coins[NUM_COINS];
+long coin_map[NUM_COINS];
+long caps[NUM_COINS];
+void get_coins()
+{
+    for(long k=LOWER; k<=UPPER; k++)
+    {
+	coins[k - LOWER] = g(k);
+	coin_map[k - LOWER] = coins[k - LOWER];
+    }
+    merge_sort(coins, NUM_COINS);
+}
+void show_coin_map()
+{
+    printf("coins:\n");
+    printf("------\n");
+    for(long k=0; k<NUM_COINS; k++)
+	printf("%ld: %ld\n", k, coins[k]);
+    printf("\n\n");
+
+    printf("coin_map:\n");
+    printf("---------\n");
+    for(long k=0; k<NUM_COINS; k++)
+	printf("%ld: %ld\n", k + LOWER, coin_map[k]);
+    printf("\n\n");
+
+    printf("caps:\n");
+    printf("---------\n");
+    for(long k=0; k<NUM_COINS; k++)
+	printf("%ld: %ld\n", coins[k], TABLE_SIZE/coins[k]);
+    printf("\n\n");
 }
 
 void calc_target()
@@ -136,7 +201,7 @@ void calc_target()
 
     // find max f(k, i)
     long f = 0; long f_max = 0;
-    for(int k=57; k<=72; k++)
+    for(int k=LOWER; k<=UPPER; k++)
     {
 	f = (l - exp1(2, A) * k);
 	// printf("f: %ld\n", f);
@@ -148,17 +213,19 @@ void calc_target()
     printf("stored-columns size: %ld GB\n\n", (f_max * (long)920)/exp1(2, 30));
 
     remove_small_orbit_rows();
+    get_coins();
 }
+
 
 void copy_table(long* table, long* old_table, int len)
 {
     for(int i=0; i<len; i++)
 	old_table[i] = table[i];
 }
-void copy_table_gmp(mpz_t* table, mpz_t* old_table, int len)
+void copy_byte_table(unsigned char* table, unsigned char* old_table, int len)
 {
     for(int i=0; i<len; i++)
-	mpz_set(old_table[i], table[i]);
+	old_table[i] = table[i];
 }
 
 #define INF 2305843009213693951
@@ -171,72 +238,213 @@ void add1(long* a, long b)
 	*a = *a + b;
 }
 
-long table[58900000];
-long old_table[58900000];
-/* mpz_t table[58900000]; */
-/* mpz_t old_table[58900000]; */
-void count(long curr_target)
+#define NUM_POSSIBLE 17996735
+void possible_sums()
 {
-    for(int i=0; i<curr_target+1; i++)
+    char* table = (char*)malloc(TABLE_SIZE * sizeof(char));
+    char* old_table = (char*)malloc(TABLE_SIZE * sizeof(char));
+
+    for(int i=0; i<TABLE_SIZE; i++)
     {
-	/* mpz_init(table[i]); */
-	/* mpz_init(old_table[i]); */
-	/* mpz_set_si(old_table[i], (long)0); */
 	old_table[i] = 0;
+	table[i] = 0;
     }
     old_table[0] = 1;
-    // mpz_set_si(old_table[0], (long)1);
 
-    printf("count():\n");
-    printf("--------\n\n");
-    for(int i=0; i<115; i++)
+    for(int i=0; i<112; i++)
     {
-	for(long j=0; j<=curr_target; j++)
+	long curr_possible = 0;
+	for(long j=0; j<TABLE_SIZE; j++)
 	{
-	    if((j & 0xfffff) == 0)
-		printf("i = %d,  curr_target - j = %ld\n", i, curr_target - j);
+	    /* if((j & 0xffffff) == 0) */
+	    /* 	printf("i: %d  j: %ld\n", i, j); */
 
-	    table[j] = 0;
-	    // mpz_set_si(table[j], (long)0);
-	    for(int k=57; k<=72; k++)
+	    if(old_table[j] == 0) continue;
+	    curr_possible++;
+
+	    for(int k=0; k<NUM_COINS; k++)
+		if(j + coins[k] < TABLE_SIZE)
+		    table[j + coins[k]] = 1;
+	}
+	printf("coin %d  curr_possible: %ld\n", i-1, curr_possible);
+	for(int j=0; j<TABLE_SIZE; j++)
+	    old_table[j] = table[j];
+    }
+
+    long num_possible = 0;
+    for(long j=0; j<TABLE_SIZE; j++)
+    {
+	// printf("%ld: %d\n", j, table[j] * 0xffffff);
+	num_possible = num_possible + table[j];
+    }
+    printf("num_possible: %ld\n\n", num_possible);
+
+    free(table);
+    free(old_table);
+}
+
+void count(long curr_target)
+{
+    char** table = (char**)malloc(113 * sizeof(char*));
+    char** old_table = (char**)malloc(113 * sizeof(char*));
+    long* old_possible = (long*)malloc(NUM_POSSIBLE * sizeof(long));
+    long* possible = (long*)malloc(NUM_POSSIBLE * sizeof(long));
+    int curr_possible = 0;
+
+    for(int i=0; i<113; i++)
+    {
+	table[i] = (char*)malloc(NUM_POSSIBLE * sizeof(char));
+	old_table[i] = (char*)malloc(NUM_POSSIBLE * sizeof(char));
+    }
+
+    // clear table
+    old_possible[0] = 0;
+
+    for(int c=0; c<NUM_COINS; c++)
+    {
+	for(int i=0; i<113; i++)
+	{
+	    for(int j=0; j<TABLE_SIZE; j++)
 	    {
-		long j1 = j - g(k);
-		if(j1 < 0) continue;
-		// table[j] += old_table[j1];
-		add1(&table[j], old_table[j1]);
-		// mpz_add(table[j], table[j], old_table[j1]);
+		
 	    }
 	}
-	copy_table(table, old_table, curr_target);
-	// copy_table_gmp(table, old_table, curr_target);
+    }
+
+
+    for(int i=0; i<113; i++)
+    {
+	free(table[i]);
+	free(old_table[i]);
+    }
+    free(table);
+    free(old_table);
+    free(possible);
+    free(old_possible);
+}
+
+void unrestricted_num_coins()
+{
+    long *table = (long*)malloc(TABLE_SIZE * sizeof(long));
+    long *old_table = (long*)malloc(TABLE_SIZE * sizeof(long));
+
+    for(int j=0; j<TABLE_SIZE; j++)
+    {
+	table[j] = 0;
+	old_table[j] = 0;
+    }
+    old_table[0] = 1;
+
+    printf("unrestricted_num_coins(): start\n");
+
+    for(int i=0; i<NUM_COINS; i++)
+    {
+	for(int j=0; j<TABLE_SIZE; j++)
+	{
+	    if((j & 0xfffff) == 0)
+		printf("coin %d, TABLE_SIZE - j: %ld\n", i, TABLE_SIZE - j);
+
+	    if(old_table[j] == 0) continue;
+
+	    long curr = 0; int num_curr_coin = 0;
+            // take at most 112 of each coin
+	    while(curr + j < TABLE_SIZE && num_curr_coin < 112)
+	    {
+		table[j+curr] = table[j+curr] + old_table[j];
+		curr = curr + coins[i];
+		num_curr_coin++;
+	    }
+	}
+	copy_table(table, old_table, TABLE_SIZE);
+	for(int j=0; j<TABLE_SIZE; j++) table[j] = 0;
     }
     printf("\n\n");
 
-    printf("count:\n");
-    for(long j=0; j<=curr_target; j++)
+    for(int i=0; i<num_targets; i++)
     {
-	printf("count[%ld]: ", j);
-	printf("%ld", table[j]);
-	// mpz_out_str(stdout, 10, table[j]);
-	printf("\n");
+	printf("reduced_targets[%d]: %ld, count: %ld\n",
+	       i, reduced_targets[i], old_table[reduced_targets[i]]);
+    }
+}
+
+void need_RAM()
+{
+    // table[c][i][s]
+    // := number of ways to make s using i coins
+    //    in {coin_0, coin_1, ... coin_c}
+    //
+    // table[c][i][s]
+    // = SUM{k=0...i} table[c - 1][i - k][s - coins[c] * k]
+
+    unsigned char **table = (unsigned char **)malloc(113 * sizeof(unsigned char*));
+    unsigned char **old_table = (unsigned char **)malloc(113 * sizeof(unsigned char*));
+    for(int i=0; i<=112; i++)
+    {
+	table[i] = (unsigned char *)malloc(TABLE_SIZE * sizeof(unsigned char));
+	old_table[i] = (unsigned char *)malloc(TABLE_SIZE * sizeof(unsigned char));
     }
 
-    /* for(int i=0; i<=curr_target; i++) */
-    /* { */
-    /* 	mpz_clear(table[i]); */
-    /* 	mpz_clear(old_table[i]); */
-    /* } */
+    long count = 0;
+    for(int i=0; i<=112; i++)
+    {
+	printf("coin %d\n", i);
+	for(int j=0; j<TABLE_SIZE; j++)
+	{
+	    count++;
+	    old_table[i][j] = 0;
+	    // printf("%d", table[i][j]);
+	}
+    }
+    old_table[0][0] = 1;
+    printf("size: %ld\n", count/exp1(2, 30));
+
+    for(int c=0; c<NUM_COINS; c++)
+    {
+	for(int i=0; i<=112; i++)
+	{
+	    for(int s=0; s<TABLE_SIZE; s++)
+	    {
+		table[i][s] = 0;
+		for(int k=0; k<=i; k++)
+		{
+		    long idx = (long)s -  ((long)k)*(coins[c]);
+		    if(idx < 0) continue;
+		    table[i][s] += old_table[i - k][idx];
+		}
+	    }
+	}
+	for(int i=0; i<=112; i++)
+	    copy_byte_table(table[i], old_table[i], TABLE_SIZE);
+    }
+
+    for(int i=0; i<num_targets; i++)
+    {
+	printf("reduced_targets[%d]: %ld, count: %ld\n",
+	       i, reduced_targets[i], old_table[reduced_targets[i]]);
+    }
+
+
+    for(int i=0; i<=112; i++)
+	free(table[i]);
+    free(table);
 }
 
 int main()
 {
     calc_target();
+    show_coin_map();
+
+
+    // possible_sums();
+    printf("table-size: %ld\n\n", (TABLE_SIZE * (long)113 * (long)2) / exp1(2, 30));
+
+    need_RAM();
+    // unrestricted_num_coins();
 
     for(int i=0; i<num_targets; i++)
     {
-	printf("reduced_target %d: %ld\n", i, reduced_targets[i]);
-	printf("table-size: %ld\n\n", (reduced_targets[i] * (long)64) / exp1(2, 30));
-	count(reduced_targets[i]);
+	printf("reduced_target %d: %ld\n",
+	       i, reduced_targets[i]);
     }
 
     printf("\n\n  thikache\n\n");

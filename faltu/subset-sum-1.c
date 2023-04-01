@@ -157,11 +157,11 @@ void range()
 void test2()
 {
     len = n;
-    arr1 = C[0];
+    arr1 = C[114];
     for(int i=57; i<=72; i++)
     {
 	reset_dp2();
-	int ans = subset_sum(0, i, 56);
+	int ans = subset_sum(0, i, 57);
 	printf("%d: %d\n", i, ans);
     }
     printf("\n\n");

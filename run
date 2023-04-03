@@ -8,7 +8,7 @@ flags="-lSDL2 -lm"
 # files="main.c controller.c plane21.c world.c grid.c graphics.c keyboard.c field21.c"
 
 # files="parallel.c ilp.c -fopenmp"
-files="walsh-count.c"
+files="walsh-count.c storage.c"
 # files="storage.c"
 
 if gcc $files $flags; then

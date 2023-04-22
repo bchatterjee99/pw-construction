@@ -2,7 +2,7 @@
 
 
 flags=""
-files="subset-sum-1.c ilp.c"
+files="subset-sum-3.c ilp.c"
 
 if gcc $files $flags; then
     echo -e "\n\n  compile hoe geche\n\n";

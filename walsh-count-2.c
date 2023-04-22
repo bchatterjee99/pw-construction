@@ -255,260 +255,10 @@ void add2(unsigned char* a, unsigned char b)
 }
 
 #define NUM_POSSIBLE 17996735
-void possible_sums()
+
+
+void num_largest()
 {
-    char* table = (char*)malloc(TABLE_SIZE * sizeof(char));
-    char* old_table = (char*)malloc(TABLE_SIZE * sizeof(char));
-
-    for(int i=0; i<TABLE_SIZE; i++)
-    {
-	old_table[i] = 0;
-	table[i] = 0;
-    }
-    old_table[0] = 1;
-
-    for(int i=0; i<112; i++)
-    {
-	long curr_possible = 0;
-	for(long j=0; j<TABLE_SIZE; j++)
-	{
-	    /* if((j & 0xffffff) == 0) */
-	    /* 	printf("i: %d  j: %ld\n", i, j); */
-
-	    if(old_table[j] == 0) continue;
-	    curr_possible++;
-
-	    for(int k=0; k<NUM_COINS; k++)
-		if(j + coins[k] < TABLE_SIZE)
-		    table[j + coins[k]] = 1;
-	}
-	printf("coin %d  curr_possible: %ld\n", i-1, curr_possible);
-	for(int j=0; j<TABLE_SIZE; j++)
-	    old_table[j] = table[j];
-    }
-
-    long num_possible = 0;
-    for(long j=0; j<TABLE_SIZE; j++)
-    {
-	// printf("%ld: %d\n", j, table[j] * 0xffffff);
-	num_possible = num_possible + table[j];
-    }
-    printf("num_possible: %ld\n\n", num_possible);
-
-    free(table);
-    free(old_table);
-}
-
-void count1(long curr_target)
-{
-    char** table = (char**)malloc(113 * sizeof(char*));
-    char** old_table = (char**)malloc(113 * sizeof(char*));
-    long* old_possible = (long*)malloc(NUM_POSSIBLE * sizeof(long));
-    long* possible = (long*)malloc(NUM_POSSIBLE * sizeof(long));
-    int curr_possible = 0;
-
-    for(int i=0; i<113; i++)
-    {
-	table[i] = (char*)malloc(NUM_POSSIBLE * sizeof(char));
-	old_table[i] = (char*)malloc(NUM_POSSIBLE * sizeof(char));
-    }
-
-    // clear table
-    old_possible[0] = 0;
-
-    for(int c=0; c<NUM_COINS; c++)
-    {
-	for(int i=0; i<113; i++)
-	{
-	    for(int j=0; j<TABLE_SIZE; j++)
-	    {
-		
-	    }
-	}
-    }
-
-
-    for(int i=0; i<113; i++)
-    {
-	free(table[i]);
-	free(old_table[i]);
-    }
-    free(table);
-    free(old_table);
-    free(possible);
-    free(old_possible);
-}
-
-void unrestricted_num_coins()
-{
-    long *table = (long*)malloc(TABLE_SIZE * sizeof(long));
-    long *old_table = (long*)malloc(TABLE_SIZE * sizeof(long));
-
-    for(int j=0; j<TABLE_SIZE; j++)
-    {
-	table[j] = 0;
-	old_table[j] = 0;
-    }
-    old_table[0] = 1;
-
-    printf("unrestricted_num_coins(): start\n");
-
-    for(int i=0; i<NUM_COINS; i++)
-    {
-	for(int j=0; j<TABLE_SIZE; j++)
-	{
-	    if((j & 0xfffff) == 0)
-		printf("coin %d, TABLE_SIZE - j: %ld\n", i, TABLE_SIZE - j);
-
-	    if(old_table[j] == 0) continue;
-
-	    long curr = 0; int num_curr_coin = 0;
-            // take at most 112 of each coin
-	    while(curr + j < TABLE_SIZE && num_curr_coin < 112)
-	    {
-		table[j+curr] = table[j+curr] + old_table[j];
-		curr = curr + coins[i];
-		num_curr_coin++;
-	    }
-	}
-	copy_table(table, old_table, TABLE_SIZE);
-	for(int j=0; j<TABLE_SIZE; j++) table[j] = 0;
-    }
-    printf("\n\n");
-
-    for(int i=0; i<num_targets; i++)
-    {
-	printf("reduced_targets[%d]: %ld, count: %ld\n",
-	       i, reduced_targets[i], old_table[reduced_targets[i]]);
-    }
-}
-
-void need_RAM()
-{
-    // table[c][i][s]
-    // := number of ways to make s using i coins
-    //    in {coin_0, coin_1, ... coin_c}
-    //
-    // table[c][i][s]
-    // = SUM{k=0...i} table[c - 1][i - k][s - coins[c] * k]
-
-    unsigned char **table = (unsigned char **)malloc(113 * sizeof(unsigned char*));
-    unsigned char **old_table = (unsigned char **)malloc(113 * sizeof(unsigned char*));
-    for(int i=0; i<=112; i++)
-    {
-	table[i] = (unsigned char *)malloc(TABLE_SIZE * sizeof(unsigned char));
-	old_table[i] = (unsigned char *)malloc(TABLE_SIZE * sizeof(unsigned char));
-    }
-
-    long count = 0;
-    for(int i=0; i<=112; i++)
-    {
-	printf("allocating memory: row %d/113\n", i);
-	for(int j=0; j<TABLE_SIZE; j++)
-	{
-	    count++;
-	    old_table[i][j] = 0;
-	    // printf("%d", table[i][j]);
-	}
-    }
-    printf("\n\n");
-    old_table[0][0] = 1;
-    printf("size: %ld\n", count/exp1(2, 30));
-
-    for(int c=0; c<NUM_COINS; c++)
-    {
-	for(int i=0; i<=112; i++)
-	{
-	    printf("coin: %d, row: %d\n", c, i);
-	    for(int s=0; s<TABLE_SIZE; s++)
-	    {
-		table[i][s] = 0;
-		for(int k=0; k<=i; k++)
-		{
-		    long idx = (long)s -  ((long)k)*(coins[c]);
-		    if(idx < 0) continue;
-		    table[i][s] += old_table[i - k][idx];
-		}
-	    }
-	}
-	for(int i=0; i<=112; i++)
-	    copy_byte_table(table[i], old_table[i], TABLE_SIZE);
-    }
-    printf("\n\n");
-
-    for(int i=0; i<num_targets; i++)
-    {
-	printf("reduced_targets[%d]: %ld, count: %ld\n",
-	       i, reduced_targets[i], old_table[reduced_targets[i]]);
-    }
-
-
-    for(int i=0; i<=112; i++)
-    {
-	free(table[i]);
-	free(old_table[i]);
-    }
-    free(table);
-    free(old_table);
-}
-
-/* void harddisk() */
-/* { */
-/*     printf("harddisk init:\n"); */
-
-/*     for(int i=0; i<=112; i++) */
-/*     { */
-/* 	printf("table 0 row %d\n", i); */
-/* 	start_row(0, i); */
-/* 	for(int j=0; j<TABLE_SIZE; j++) */
-/* 	{ */
-/* 	    if(i == 0 && j == 0) */
-/* 		set_cell(1); */
-/* 	    else */
-/* 		set_cell(0); */
-/* 	} */
-/* 	end_row(); */
-/*     } */
-/*     printf("\n\n"); */
-
-/*     for(int c=0; c<NUM_COINS; c++) */
-/*     { */
-/* 	int old_table = c % 2; */
-/* 	int table = 1 - (c % 2); */
-/* 	for(int i=0; i<=112; i++) */
-/* 	{ */
-
-/* 	    start_row(table, i); */
-/* 	    for(int s=0; s<TABLE_SIZE; s++) */
-/* 	    { */
-/* 		if((s & 0xfffff) == 0) */
-/* 		    printf("coin: %d row: %d TABLE_SIZE - s: %d\n", */
-/* 			   c, i, TABLE_SIZE - s); */
-
-/* 		int curr = 0; */
-/* 		for(int k=0; k<=i; k++) */
-/* 		{ */
-/* 		    int idx = s - k * coins[c]; */
-/* 		    if(idx < 0) continue; */
-/* 		    curr = curr + get_cell(old_table, i - k, idx); */
-/* 		} */
-/* 		set_cell(curr); */
-/* 	    } */
-/* 	    end_row(); */
-/* 	} */
-/*     } */
-/*     printf("\n\n"); */
-
-/*     for(int i=0; i<num_targets; i++) */
-/*     { */
-/* 	printf("reduced_targets[%d]: %ld, count: %ld\n", */
-/* 	       i, reduced_targets[i], get_cell(0, 112, reduced_targets[i])); */
-/*     } */
-/* } */
-
-void new_recurrence()
-{
-
     // table[c][i][s]
     // := number of ways to make s using i coins
     //    in {coin_0, coin_1, ... coin_c}
@@ -536,21 +286,39 @@ void new_recurrence()
     {
 	for(int c=0; c<NUM_COINS; c++)
 	{
-	    printf("i:%d, coin: %d\n", i, c);
+	    printf("i:%d, coin: %d\n", i, c); fflush(stdout);
 	    for(int s=0; s<TABLE_SIZE; s++)
 	    {
 		table[c][s] = 0;
 
 		if(s - coins[c] >= 0)
-		    // table[c][s] = table[c][s] + old_table[c][s - coins[c]];
-		    add2(&table[c][s], old_table[c][s - coins[c]]);
+		    table[c][s] = table[c][s] | old_table[c][s - coins[c]];
+		    // add2(&table[c][s], old_table[c][s - coins[c]]);
 		if(c > 0)
-		    // table[c][s] = table[c][s] + table[c-1][s];
-		    add2(&table[c][s], table[c-1][s]);
+		    table[c][s] = table[c][s] | table[c-1][s];
+		    // add2(&table[c][s], table[c-1][s]);
 	    }
 	}
 	for(int c=0; c<NUM_COINS; c++)
 	    copy_byte_table(table[c], old_table[c], TABLE_SIZE);
+
+	// take rest largest coin
+	if(112 - i <= 63)
+	{
+	    long take = 112 - i;
+	    printf("take %ld\n", take);
+	    printf("-----------\n");
+	    for(int j=0; j<num_targets; j++)
+	    {
+		long new_target = reduced_targets[j] - take * coins[NUM_COINS - 1];
+		if(new_target < 0)
+		    printf("target %ld, possible: 0", new_target);
+		else
+		    printf("target %ld, possible: %d", new_target, old_table[NUM_COINS - 2][new_target]);
+		printf("\n");
+	    }
+	    printf("\n\n");
+	}
     }
     printf("\n\n");
 
@@ -570,18 +338,14 @@ void new_recurrence()
     free(old_table);
 }
 
-
 int main()
 {
     calc_target();
     show_coin_map();
 
-    // possible_sums();
     printf("table-size: %ld\n\n", (TABLE_SIZE * (long)16 * (long)2) / exp1(2, 30));
 
-    // need_RAM();
-    // unrestricted_num_coins();
-    new_recurrence();
+    num_largest();
 
 
     printf("\n\n  thikache\n\n");

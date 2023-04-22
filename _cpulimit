@@ -1,4 +1,4 @@
 #-*-sh-*-
 
 
-cpulimit -e a.out -l 40
+cpulimit -e a.out -l 50

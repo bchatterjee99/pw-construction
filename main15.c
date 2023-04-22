@@ -29,10 +29,13 @@ int main()
     /* plane_draw_Orbits_grouped(); */
     /* draw_update(); */
     /* char ch = fgetch(stdin); */
-    // plane_animate_random_lines();
+
+
+
+    plane_animate_random_lines();
     // plane_animate_Orbit_lines(2);
 
-    construct_ILP();
+    // construct_ILP();
 
     graphics_end();
     destroy_plane();

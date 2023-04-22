@@ -4,12 +4,12 @@ tput reset
 
 flags="-lSDL2 -lm"
 
-# files="main15.c plane15.c grid.c graphics.c keyboard.c field15.c"
+files="main15.c plane15.c grid.c graphics.c keyboard.c field15.c"
 # files="main.c controller.c plane21.c world.c grid.c graphics.c keyboard.c field21.c"
 
 # files="parallel.c ilp.c -fopenmp"
-files="walsh-count.c storage.c"
-# files="storage.c"
+# files="walsh-count-2.c"
+# files="faltu.c ilp.c"
 
 if gcc $files $flags; then
     echo -e "\n\n  compile hoe geche\n\n";

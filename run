@@ -11,6 +11,7 @@ files="main15.c plane15.c grid.c graphics.c keyboard.c field15.c"
 files="distance.c ilp.c"
 files="small-orbits.c ilp.c"
 files="relaxation.c ilp.c -lglpk -lm"
+files="branch.c ilp.c -lglpk -lm"
 
 if gcc $files $flags; then
     echo -e "\n\n  compile hoe geche\n\n";

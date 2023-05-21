@@ -24,6 +24,7 @@ void test2()
     obj[0] = 1; obj[1] = 1;
 
     double z = solve1(&C[0], b, c, obj, sol, 1, 2, 2);
+    printf("----------\n\n");
 
     printf("SIMPLEX returned:\n");
     printf("z = %lf\n", z);
@@ -45,6 +46,7 @@ void test3()
     {
 	obj[i] = 1;
 	double z = solve1(C, b, c, obj, sol, 1, 115, 115);
+	printf("----------\n\n");
 	printf("SIPMLEX returned:\n");
 	printf("i = %d -- ", i);
 	printf("z = %lf\n", z);
@@ -57,7 +59,7 @@ void test3()
 
 int main()
 {
-    test3();
+    test2();
 
     printf("\n\n  thikache\n\n");
     return 0;

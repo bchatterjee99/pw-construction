@@ -231,6 +231,7 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 {
     // intialize
     glp_prob *lp;
+    glp_smcp parm;
     int *ia, *ja; double *arr;
     ia = (int*)malloc((n*m + 1) * sizeof(int));
     ja = (int*)malloc((n*m + 1) * sizeof(int));
@@ -246,6 +247,8 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 	glp_set_obj_dir(lp, GLP_MAX);
     glp_add_rows(lp, n);
     glp_add_cols(lp, m);
+    glp_init_smcp(&parm);
+    parm.msg_lev = GLP_MSG_OFF;
 
 
     // constraints
@@ -272,8 +275,8 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 
     // solve
     glp_load_matrix(lp, n*m, ia, ja, arr);
-    glp_simplex(lp, NULL);
-    printf("----------\n\n");
+    glp_simplex(lp, &parm);
+    // printf("----------\n\n");
 
     // solution
     z = glp_get_obj_val(lp);

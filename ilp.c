@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <glpk.h>
 
-/* #include <glpk.h> */
 /* // GNU linear programming kit diye */
 /* void solve(long Constraint[][200], long b[], long c[], int n, int m) */
 /* { */
@@ -162,6 +163,15 @@ void mult_vector(long A[][200], long b[], long c[], int n)
 		c[i] = c[i] + A[i][k] * b[k];
     }
 }
+void fmult_vector(long A[][200], double b[], double c[], int n)
+{
+    for(int i=0; i<n; i++)
+    {
+	    c[i] = 0;
+	    for(int k=0; k<n; k++)
+		c[i] = c[i] + ((double) A[i][k]) * b[k];
+    }
+}
 
 // returns distance from failed constraints
 int check2(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
@@ -207,4 +217,74 @@ int check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_
     }
     if(flag == 0) return 1;
     return 0;
+}
+
+int same(long a[], long b[], int n)
+{
+    for(int i=0; i<n; i++)
+	if(a[i] != b[i])
+	    return 0;
+    return 1;
+}
+
+double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int dir, int n, int m)
+{
+    // intialize
+    glp_prob *lp;
+    int *ia, *ja; double *arr;
+    ia = (int*)malloc((n*m + 1) * sizeof(int));
+    ja = (int*)malloc((n*m + 1) * sizeof(int));
+    arr = (double*)malloc((n*m + 1) * sizeof(double));
+    double z;
+
+    // setup
+    lp = glp_create_prob();
+    glp_set_prob_name(lp, "aaa");
+    if(dir == 0) // minimization
+	glp_set_obj_dir(lp, GLP_MIN);
+    else // maximization
+	glp_set_obj_dir(lp, GLP_MAX);
+    glp_add_rows(lp, n);
+    glp_add_cols(lp, m);
+
+
+    // constraints
+    int k = 1;
+    for(int i=0; i<n; i++)
+    {
+	for(int j=0; j<m; j++)
+	{
+	    ia[k] = i+1;
+	    ja[k] = j+1;
+	    arr[k] = C[i][j];
+	    k++;
+	}
+	glp_set_row_bnds(lp, i+1, GLP_DB, (double)b[i], (double)c[i]);
+    }
+
+    // objective
+    for(int i=0; i<m; i++)
+	glp_set_obj_coef(lp, i+1, obj[i]);
+
+    // column bounds
+    for(int i=0; i<m; i++) // keep 0-1
+	glp_set_col_bnds(lp, i+1, GLP_DB, 0.0, 1.0);
+
+    // solve
+    glp_load_matrix(lp, n*m, ia, ja, arr);
+    glp_simplex(lp, NULL);
+    printf("----------\n\n");
+
+    // solution
+    z = glp_get_obj_val(lp);
+    // printf("solution:\n");
+    for(int i=0; i<m; i++)
+    {
+	double tmp = glp_get_col_prim(lp, i+1);
+	// printf("x[%d]: %lf\n", i+1, tmp);
+	sol[i] = tmp;
+    }
+
+    glp_delete_prob(lp);
+    return z;
 }

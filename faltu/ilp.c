@@ -162,6 +162,15 @@ void mult_vector(long A[][200], long b[], long c[], int n)
 		c[i] = c[i] + A[i][k] * b[k];
     }
 }
+void fmult_vector(long A[][200], double b[], double c[], int n)
+{
+    for(int i=0; i<n; i++)
+    {
+	    c[i] = 0;
+	    for(int k=0; k<n; k++)
+		c[i] = c[i] + ((double) A[i][k]) * b[k];
+    }
+}
 
 // returns distance from failed constraints
 int check2(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_m)
@@ -207,4 +216,12 @@ int check1(long f[], long Constraint[][200], long b[], long c[], int C_n, int C_
     }
     if(flag == 0) return 1;
     return 0;
+}
+
+int same(long a[], long b[], int n)
+{
+    for(int i=0; i<n; i++)
+	if(a[i] != b[i])
+	    return 0;
+    return 1;
 }

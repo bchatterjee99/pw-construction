@@ -2,7 +2,8 @@
 
 
 flags=""
-files="subset-sum-3.c ilp.c"
+files="extra-constraint.c ilp.c"
+files="distance.c ilp.c"
 
 if gcc $files $flags; then
     echo -e "\n\n  compile hoe geche\n\n";

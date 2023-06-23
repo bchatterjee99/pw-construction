@@ -57,9 +57,54 @@ void test3()
     }
 }
 
+void int_sol1(double sol[])
+{
+    long int_sol[200];
+    printf("int-sol:\n");
+    for(int i=0; i<115; i++)
+    {
+	if(i & 1)
+	{
+	    if(sol[i] != 0.0)
+		sol[i] = 1;
+	}
+	else
+	{
+	    if(sol[i] != 1.0)
+		sol[i] = 0;
+	}
+	int_sol[i] = sol[i];
+	printf("x[%d]: %d\n", i+1, int_sol[i]);
+    }
+    int ch = check1(int_sol, C, b, c, C_n, C_m);
+    printf("ch = %d\n", ch);
+    printf("\n\n");
+}
+
+void test4()
+{
+    input_constraint(C, b, c, "constraint115.txt", &C_n, &C_m);
+    // show_ilp(C, b, c, C_n, C_m);
+    long obj[200]; double sol[200];
+
+    for(int i=0; i<115; i++)
+	// obj[i] = 1 * ((-1) * (i & 1));
+	obj[i] = 1;
+
+    double z = solve1(C, b, c, obj, sol, 1, 115, 115);
+    printf("----------\n\n");
+    printf("SIPMLEX returned:\n");
+    printf("z = %lf\n", z);
+    printf("sol:\n");
+    for(int j=0; j<115; j++)
+	printf("x[%d]: %lf\n", j+1, sol[j]);
+    printf("\n\n");
+
+}
+
 int main()
 {
-    test2();
+    test4();
 
     printf("\n\n  thikache\n\n");
     return 0;

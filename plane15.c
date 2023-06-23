@@ -116,14 +116,39 @@ void find_Orbits()
 	if(Orbits[i] != -1) continue;
 	point = Points[i];
 	Orbit_count++;
-	for(int j=0; j<J_mult_order; j++)
+
+
+	// order 1
+	/* for(int j=0; j<J_mult_order; j++) */
+	/* { */
+	/*     // phi(J*) */
+	/*     a = field_multiplication(point, J_mult[j]); */
+	/*     for(int p = 0; p < M_char_power; p++) // includes identity */
+	/*     { */
+	/* 	// forbenius */
+	/* 	b = field_exponent(a, exp1(M_char, p)); */
+
+        /*         // coset leader for Lb (point identifier) */
+	/* 	int c = coset_leaders[b];  */
+
+	/* 	// Now: Group-Action(i'th point) -> c'th point */
+	/* 	if(Orbits[c] == -1) // new point */
+	/* 	{ */
+	/* 	    Orbits[c] = Orbit_count - 1; // place in current orbit */
+	/* 	    new_Pos[c] = point_count++; // place orbit points together */
+	/* 	} */
+	/*     } */
+	/* } */
+
+	// order 2
+	for(int p = 0; p < M_char_power; p++) // includes identity
 	{
-	    // phi(J*)
-	    a = field_multiplication(point, J_mult[j]);
-	    for(int p = 0; p < M_char_power; p++) // includes identity
+	    // forbenius
+	    a = field_exponent(point, exp1(M_char, p));
+	    for(int j=0; j<J_mult_order; j++)
 	    {
-		// forbenius
-		b = field_exponent(a, exp1(M_char, p));
+		// phi(J*)
+		b = field_multiplication(a, J_mult[j]);
 
                 // coset leader for Lb (point identifier)
 		int c = coset_leaders[b]; 

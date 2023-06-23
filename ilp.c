@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <glpk.h>
 
+#include "matrix.h"
+
 /* // GNU linear programming kit diye */
 /* void solve(long Constraint[][200], long b[], long c[], int n, int m) */
 /* { */
@@ -227,15 +229,77 @@ int same(long a[], long b[], int n)
     return 1;
 }
 
+
+void find_basic(long C[][200], long b[], long c[], double sol[], int n, int m, glp_prob* lp)
+{
+    // n basic variables
+    // m non-basic variables
+    double** A = create_matrix(n, m + n);
+    for(int i=0; i<n; i++)
+    {
+	for(int j=0; j<m; j++)
+	    A[i][j] = (double)C[i][j];
+	for(int j=m; j<m+n; j++)
+	    A[i][j] = (double)0;
+	A[i][m + i] = (double)1;
+    }
+
+    double** B = create_matrix(n, n);
+    double**  NB = create_matrix(n, m);
+
+    // find basic/non-basic variables
+    // printf("basic variables:\n");
+    int st; int b_count = 0, nb_count = 0;
+    for(int i=0; i<n; i++)
+    {
+	st = glp_get_row_stat(lp, i+1);
+	if(st == GLP_BS)
+	{
+	    // printf("row %d\n", i);
+	    copy_column(B, b_count, A, m + i, n);
+	    b_count++;
+	}
+	else
+	{
+	    copy_column(NB, nb_count, A, m + i, n);
+	    nb_count++;
+	}
+    }
+    for(int j=0; j<m; j++)
+    {
+	st = glp_get_col_stat(lp, j+1);
+	if(st == GLP_BS)
+	{
+	    // printf("column %d\n", j);
+	    copy_column(B, b_count, A, j, n);
+	    b_count++;
+	}
+	else
+	{
+	    copy_column(NB, nb_count, A, j, n);
+	    nb_count++;
+	}
+    }
+    printf("basic count: %d\n", b_count);
+    printf("\n\n");
+
+    destroy_matrix(A, n);
+    destroy_matrix(B, n);
+    destroy_matrix(NB, n);
+}
+
 double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int dir, int n, int m)
 {
+    int num_row = 2 * n;
+    int num_col = m + 1;
+
     // intialize
     glp_prob *lp;
     glp_smcp parm;
     int *ia, *ja; double *arr;
-    ia = (int*)malloc((n*m + 1) * sizeof(int));
-    ja = (int*)malloc((n*m + 1) * sizeof(int));
-    arr = (double*)malloc((n*m + 1) * sizeof(double));
+    ia = (int*)malloc((num_row * num_col + 1) * sizeof(int));
+    ja = (int*)malloc((num_row * num_col + 1) * sizeof(int));
+    arr = (double*)malloc((num_row * num_col + 1) * sizeof(double));
     double z;
 
     // setup
@@ -245,8 +309,8 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 	glp_set_obj_dir(lp, GLP_MIN);
     else // maximization
 	glp_set_obj_dir(lp, GLP_MAX);
-    glp_add_rows(lp, n);
-    glp_add_cols(lp, m);
+    glp_add_rows(lp, num_row);
+    glp_add_cols(lp, num_col);
     glp_init_smcp(&parm);
     parm.msg_lev = GLP_MSG_OFF;
 
@@ -255,14 +319,33 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
     int k = 1;
     for(int i=0; i<n; i++)
     {
+	// upper
+	ia[k] = 2*i + 1;
+	ja[k] = 1;
+	arr[k] = c[i];
+	k++;
 	for(int j=0; j<m; j++)
 	{
-	    ia[k] = i+1;
-	    ja[k] = j+1;
+	    ia[k] = 2*i+1;
+	    ja[k] = j+2;
+	    arr[k] =  - C[i][j];
+	    k++;
+	}
+	glp_set_row_bnds(lp, 2*i+1, GLP_LO, 0.0, 0.0);
+
+	// lower
+	ia[k] = 2*i + 2;
+	ja[k] = 1;
+	arr[k] = - b[i];
+	k++;
+	for(int j=0; j<m; j++)
+	{
+	    ia[k] = 2*i+2;
+	    ja[k] = j+2;
 	    arr[k] = C[i][j];
 	    k++;
 	}
-	glp_set_row_bnds(lp, i+1, GLP_DB, (double)b[i], (double)c[i]);
+	glp_set_row_bnds(lp, 2*i+2, GLP_LO, 0.0, 0.0);
     }
 
     // objective
@@ -270,13 +353,13 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 	glp_set_obj_coef(lp, i+1, obj[i]);
 
     // column bounds
-    for(int i=0; i<m; i++) // keep 0-1
+    for(int i=0; i<m; i++) // keep 0 - 1
+	// glp_set_col_bnds(lp, i+1, GLP_LO, 0.0, 0.0);
 	glp_set_col_bnds(lp, i+1, GLP_DB, 0.0, 1.0);
 
     // solve
-    glp_load_matrix(lp, n*m, ia, ja, arr);
+    glp_load_matrix(lp, (2*n)*m, ia, ja, arr);
     glp_simplex(lp, &parm);
-    // printf("----------\n\n");
 
     // solution
     z = glp_get_obj_val(lp);
@@ -287,6 +370,9 @@ double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int d
 	// printf("x[%d]: %lf\n", i+1, tmp);
 	sol[i] = tmp;
     }
+
+    glp_print_sol(lp, "simplex.txt");
+    // find_basic(C, b, c, sol, n, m, lp);
 
     glp_delete_prob(lp);
     return z;

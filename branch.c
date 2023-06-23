@@ -22,6 +22,9 @@ int check(int len)
 	num_one += curr[i];
     printf("num_one: %d\n", num_one);
 
+    if(num_one > 57) return 0;
+    if(len - num_one > 58) return 0;
+
     for(int i=0; i<115; i++) obj[i] = 0;
     for(int i=0; i<len; i++) obj[i] = curr[i];
     z = solve1(C, b, c, obj, sol, 1, 115, 115);
@@ -61,10 +64,11 @@ void branch(int bit)
     for(int i=0; i<bit; i++)
 	printf("%d", curr[i]);
     printf("\n");
+    printf("len: %d\n", bit);
 
     // bit = 0
     curr[bit] = 0;
-    ch = check(bit);
+    ch = check(bit+1);
     if(ch == 0)
 	printf("0 CUT: prefix infeasible\n");
     if(ch == 1)
@@ -72,7 +76,7 @@ void branch(int bit)
 
     // bit = 1
     curr[bit] = 1;
-    ch = check(bit);
+    ch = check(bit+1);
     if(ch == 0)
 	printf("1 CUT: prefix infeasible\n");
     if(ch == 1)

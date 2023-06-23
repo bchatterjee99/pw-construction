@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 int WINDOW_WIDTH = 1120;
 int WINDOW_HEIGHT = 630;
@@ -9,6 +10,7 @@ int WINDOW_HEIGHT = 630;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
+SDL_Surface* surface;
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
@@ -39,6 +41,8 @@ void init_sdl()
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
+
+    surface = SDL_GetWindowSurface(window);
 }
 
 void end_sdl()
@@ -108,6 +112,8 @@ void graphics_draw_rect(int x, int y, int w, int h)
     cell.w = w;
     cell.h = h;
     SDL_RenderFillRect(renderer, &cell);
+
+    SDL_FillRect(surface, &cell, curr_color);
 }
 
 int inside_screen(int row, int col)
@@ -188,6 +194,13 @@ void graphics_flood_fill(int screen_x, int screen_y)
     if(old_color == curr_color) return;
 
     recursive_fill(row, col, old_color);
+}
+
+void graphics_save(char* filename)
+{
+    // surface = SDL_GetWindowSurface(window);
+    SDL_UpdateWindowSurface(window);
+    IMG_SavePNG(surface, filename);
 }
 
 void graphics_midpoint_circle(int centre_x, int centre_y, int radius)

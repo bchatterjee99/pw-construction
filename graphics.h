@@ -22,4 +22,5 @@ void graphics_flood_fill(int screen_x, int screen_y);
 
 void graphics_midpoint_circle(int centre_x, int centre_y, int radius);
 
+void graphics_save(char* filename);
 

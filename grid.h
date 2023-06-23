@@ -11,3 +11,5 @@ void grid_fill_cell(int pos, int color);
 void grid_mark_cell(int pos);
 
 void grid_update();
+
+void grid_save(char* str, int num);

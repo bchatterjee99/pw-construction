@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "graphics.h"
@@ -104,4 +106,54 @@ void grid_mark_cell(int pos)
 void grid_update()
 {
     graphics_update();
+}
+
+int num_digits(int n)
+{
+    if(n < 0) n = -n;
+    if(n == 0) return 1;
+
+    int ans = 0;
+    while(n > 0)
+    {
+	n = n / 10;
+	ans++;
+    }
+    return ans;
+}
+void num_to_str(int n, char* str)
+{
+    if(n < 0) n = - n;
+
+    int d = num_digits(n);
+    str[d] = '\0';
+    for(int i=d-1; i>=0; i--)
+    {
+	str[i] = '0' + (n % 10);
+	n = n / 10;
+    }
+}
+void grid_save(char* str, int num)
+{
+    // printf("grid_save():\n");
+
+    char* prefix = "./img/";
+    char* suffix = ".png";
+
+
+    int d = num_digits(num);
+    int total = strlen(prefix) + strlen(str) + d + strlen(suffix) + 1;
+    char* filename = (char*)malloc(total * sizeof(char));
+    char* strnum = (char*)malloc((d+1) * sizeof(char));
+    num_to_str(num, strnum);
+
+
+    strcpy(filename, prefix);
+    strcpy(filename + strlen(filename), str);
+    strcpy(filename + strlen(filename), strnum);
+    strcpy(filename + strlen(filename), suffix);
+
+    // printf("final: %s\n\n", filename);
+
+    graphics_save(filename);
 }

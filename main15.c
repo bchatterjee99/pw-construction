@@ -30,8 +30,8 @@ int main()
     /* draw_update(); */
     /* char ch = fgetch(stdin); */
 
-    plane_animate_random_lines();
-    // plane_animate_Orbit_lines(2);
+    // plane_animate_random_lines();
+    plane_animate_Orbit_lines(2);
 
     // construct_ILP();
 

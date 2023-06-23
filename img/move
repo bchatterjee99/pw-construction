@@ -1,0 +1,3 @@
+#-*-sh-*-
+
+cp *.png ../../pw-report/img/

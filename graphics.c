@@ -198,8 +198,6 @@ void graphics_flood_fill(int screen_x, int screen_y)
 
 void graphics_save(char* filename)
 {
-    // surface = SDL_GetWindowSurface(window);
-    SDL_UpdateWindowSurface(window);
     IMG_SavePNG(surface, filename);
 }
 

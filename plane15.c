@@ -267,7 +267,7 @@ void destroy_plane()
 void plane_animate_random_lines()
 {
     plane_draw_Orbits_grouped();
-    int counter = 30;
+    int counter = 30; int itr = 1;
     while(counter--)
     {
 	unsigned long alpha = rand() % M_order;
@@ -275,6 +275,7 @@ void plane_animate_random_lines()
 	plane_draw_line(alpha);
 	grid_update();
 	if(key_press()) break;
+	grid_save("random", itr); itr++;
 	sleep(2);
     }
 }
@@ -282,7 +283,7 @@ void plane_animate_random_lines()
 void plane_animate_Orbit_lines(int orbit)
 {
     plane_draw_Orbits_grouped();
-    int counter = 100; int idx = 0;
+    int counter = 100; int idx = 0; int itr = 1;
     while(counter--)
     {
 	// pick next line from orbit
@@ -296,6 +297,7 @@ void plane_animate_Orbit_lines(int orbit)
 	plane_draw_line(alpha);
 	grid_update();
 	if(key_press()) break;
+	grid_save("orbit2-", itr); itr++;
 	sleep(2);
     }
 }

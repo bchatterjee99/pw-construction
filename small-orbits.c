@@ -12,7 +12,8 @@ void get_non_zero(int arr[])
 	if(arr[i])
 	{
 	    count++;
-	    printf("%d) %d: %d\n", count, i, arr[i]);
+	    // printf("%d) %d: %d\n", count, i, arr[i]);
+	    printf("%dx_{%d} + ", arr[i], (i+1));
 
 	    int flag = 0;
 	    for(int j=0; j<size; j++)

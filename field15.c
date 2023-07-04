@@ -75,7 +75,7 @@ unsigned long field_multiplication(unsigned long a, unsigned long b)
 {
     unsigned long prod = polynomial_multiplication(a, b);
     // printf("polynomial mult: %x\n", prod);
-    unsigned ans = modulo(prod);
+    unsigned long ans = modulo(prod);
     return ans;
 }
 

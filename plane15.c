@@ -75,7 +75,7 @@ void find_Points()
 {
     int arr[M_order];
     for(int i=0; i<M_order; i++) arr[i] = 0;
-    coset_leaders[0] = 0;
+    coset_leaders[0] = 0; // 0 not in M_mult or L_mult
 
     int count = 0;
     for(unsigned long i=1; i<M_order; i++)

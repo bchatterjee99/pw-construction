@@ -13,6 +13,11 @@ for a in F2:
 print("-----------");
 
 for a in F2:
+    print(-a);
+
+print("-----------");
+
+for a in F2:
     print(a^2)
 
 

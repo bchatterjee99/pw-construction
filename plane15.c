@@ -194,15 +194,6 @@ void plane_draw_Orbits()
 	    orbit_color[o] = rand() & 0xffffff;
 	grid_fill_cell(i, orbit_color[o]);
     }
-
-    for(int i=2; i<Orbit_count; i+=2)
-	orbit_color[i] = orbit_color[i-1];
-    for(int i=0; i<Num_Points; i++)
-    {
-	int o = Orbits[i];
-	grid_fill_cell(i, orbit_color[o]);
-    }
-
 }
 void plane_draw_Orbits_grouped()
 {
@@ -219,6 +210,7 @@ void plane_draw_Orbits_grouped()
 	grid_fill_cell(new_Pos[i], orbit_color[o]);
     }
 
+    // grouping 2 consecutive orbits
     /* for(int i=2; i<Orbit_count; i+=2) */
     /* 	orbit_color[i-1] = orbit_color[i]; */
     /* for(int i=0; i<Num_Points; i++) */
@@ -226,7 +218,8 @@ void plane_draw_Orbits_grouped()
     /* 	int o = Orbits[i]; */
     /* 	grid_fill_cell(new_Pos[i], orbit_color[o]); */
     /* } */
-    grid_save("orbits", 0);
+
+    // grid_save("orbits", 0);
 }
 
 void plane_redraw_Orbits_grouped()
@@ -292,7 +285,7 @@ void plane_animate_random_lines()
 	plane_draw_line(alpha);
 	grid_update();
 	if(key_press()) break;
-	grid_save("random", itr); itr++;
+	// grid_save("random", itr); itr++;
 	sleep(2);
     }
 }
@@ -314,7 +307,7 @@ void plane_animate_Orbit_lines(int orbit)
 	plane_draw_line(alpha);
 	grid_update();
 	if(key_press()) break;
-	grid_save("orbit2-", itr); itr++;
+	// grid_save("orbit2-", itr); itr++;
 	sleep(2);
     }
 }

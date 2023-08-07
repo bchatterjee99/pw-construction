@@ -42,7 +42,7 @@ int main()
     /* world_add_object(-5000, -30, 50, 700); */
 
     create_plane();
-    construct_ILP();
+    // construct_ILP();
     /* plane_draw_Orbits_grouped(); */
     /* draw_update(); */
     /* plane_animate_random_lines(); */

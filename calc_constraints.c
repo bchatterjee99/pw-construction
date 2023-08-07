@@ -1,13 +1,16 @@
 #include <stdio.h>
 
-#define N 15
-#define A 5
+/* #define N 15 */
+/* #define A 5 */
 
-/* #define N 21 */
-/* #define A 7 */
+#define N 21
+#define A 7
 
 #define T 1
 long target;
+
+long l_lower, l_upper;
+long t_lower, t_upper;
 
 long exp1(long a, long b)
 {
@@ -60,6 +63,14 @@ int main()
     set_target();
     l_bounds();
     t_bounds();
+
+    printf("aaaaa:\n");
+    printf("%ld\n", 8249 / 147);
+    printf("%ld\n", 8264 / 147);
+    printf("%ld\n", 147 * 56);
+    printf("%ld\n", 147 * 55);
+    printf("%ld\n", 147 * 57);
+    printf("\n\n");
 
     printf("\n\n");
     return 0;

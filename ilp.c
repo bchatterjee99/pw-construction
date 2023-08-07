@@ -230,63 +230,6 @@ int same(long a[], long b[], int n)
 }
 
 
-void find_basic(long C[][200], long b[], long c[], double sol[], int n, int m, glp_prob* lp)
-{
-    // n basic variables
-    // m non-basic variables
-    double** A = create_matrix(n, m + n);
-    for(int i=0; i<n; i++)
-    {
-	for(int j=0; j<m; j++)
-	    A[i][j] = (double)C[i][j];
-	for(int j=m; j<m+n; j++)
-	    A[i][j] = (double)0;
-	A[i][m + i] = (double)1;
-    }
-
-    double** B = create_matrix(n, n);
-    double**  NB = create_matrix(n, m);
-
-    // find basic/non-basic variables
-    // printf("basic variables:\n");
-    int st; int b_count = 0, nb_count = 0;
-    for(int i=0; i<n; i++)
-    {
-	st = glp_get_row_stat(lp, i+1);
-	if(st == GLP_BS)
-	{
-	    // printf("row %d\n", i);
-	    copy_column(B, b_count, A, m + i, n);
-	    b_count++;
-	}
-	else
-	{
-	    copy_column(NB, nb_count, A, m + i, n);
-	    nb_count++;
-	}
-    }
-    for(int j=0; j<m; j++)
-    {
-	st = glp_get_col_stat(lp, j+1);
-	if(st == GLP_BS)
-	{
-	    // printf("column %d\n", j);
-	    copy_column(B, b_count, A, j, n);
-	    b_count++;
-	}
-	else
-	{
-	    copy_column(NB, nb_count, A, j, n);
-	    nb_count++;
-	}
-    }
-    printf("basic count: %d\n", b_count);
-    printf("\n\n");
-
-    destroy_matrix(A, n);
-    destroy_matrix(B, n);
-    destroy_matrix(NB, n);
-}
 
 double solve1(long C[][200], long b[], long c[], long obj[], double sol[], int dir, int n, int m)
 {

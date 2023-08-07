@@ -5,10 +5,11 @@ tput reset
 flags="-lSDL2 -lm -lSDL2_image"
 
 # files="main.c controller.c plane21.c world.c grid.c graphics.c keyboard.c field21.c"
+files="subset-sum-1.c ilp.c -lglpk"
 files="bent.c"
+files="test.c -lgmp"
 files="main.c plane21.c grid.c graphics.c keyboard.c field21.c"
 files="main15.c plane15.c grid.c graphics.c keyboard.c field15.c"
-files="calc_constraints.c"
 
 # files="parallel.c ilp.c -fopenmp"
 # files="distance.c ilp.c"

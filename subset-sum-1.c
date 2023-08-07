@@ -16,7 +16,8 @@ long LOWER;
 int len;
 long dp1[115][73][73][73];
 
-#define INF 2305843009213693951
+// #define INF 2305843009213693951
+#define INF 9223372036854775807
 
 void add1(long* a, long b)
 {
@@ -130,23 +131,20 @@ void range()
     int rand1, rand2, rand3;
     for(int i=0; i<n; i++)
     {
-	rand1 = 0; // rand() % n;
-	arr1 = C[rand1];
+	// rand1 = 0; // rand() % n;
+	arr1 = C[i];
 	for(int j=i+1; j<n; j++)
 	{
-	    rand2 = 93; // rand() % n;
-	    arr2 = C[rand2];
+	    // rand2 = 93; // rand() % n;
+	    arr2 = C[j];
 	    for(int k=j+1; k<n; k++)
 	    {
-		rand3 = 114;
-		arr3 = C[rand3];
-		/* for(int j=30; j<115; j++) */
-		/*     printf("%d ", arr[j]); */
-		/* printf("\n\n"); */
+		// rand3 = 114;
+		arr3 = C[k];
 
 		reset_dp1();
 		long ans = subset_sum_range(0, 0, 0, 0);
-		printf("%d %d %d: %ld\n", rand1, rand2, rand3, ans);
+		printf("%d %d %d: %ld\n", i, j, k, ans);
 		
 	    }
 	}
@@ -176,28 +174,10 @@ int main()
     // test1();
     // return 0;
 
-    test2();
+    range();
 
 
     printf("\n\n  thikache\n\n");
     return 0;
 }
 
-/*
-    // calc num distinct values
-    long num_distinct = 1;
-    for(int i=116; i<=115 + 15; i++)
-	num_distinct = num_distinct * i;
-    long d = 1;
-    for(int i=1; i<=15; i++)
-	d = d * i;
-    if(num_distinct % d)
-    {
-	printf("calc_target(): 116 ... * 130 not divisible by 15!\n\n");
-	exit(1);
-    }
-    num_distinct = num_distinct / d;
-    printf("num_distinct: %ld\n", num_distinct);
-    printf("stored-distinct size: %ld\n", (num_distinct * (long)8) / exp1(2, 30));
-
- */

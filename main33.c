@@ -38,10 +38,11 @@ void grahpics_circle_test()
 int main()
 {
     graphics_init();
-    world_init(10);
-    world_add_object(10, 10, 50, 700);
-    world_add_object(-5000, -30, 50, 700);
-    // create_plane();
+    /* world_init(10); */
+    /* world_add_object(10, 10, 50, 700); */
+    /* world_add_object(-5000, -30, 50, 700); */
+
+    create_plane();
     // construct_ILP();
     /* plane_draw_Orbits_grouped(); */
     /* draw_update(); */
@@ -50,7 +51,7 @@ int main()
     /* destroy_plane(); */
 
 
-    control();
+    // control();
 
 
     // char ch = fgetc(stdin);

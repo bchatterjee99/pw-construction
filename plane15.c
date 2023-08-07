@@ -194,6 +194,15 @@ void plane_draw_Orbits()
 	    orbit_color[o] = rand() & 0xffffff;
 	grid_fill_cell(i, orbit_color[o]);
     }
+
+    for(int i=2; i<Orbit_count; i+=2)
+	orbit_color[i] = orbit_color[i-1];
+    for(int i=0; i<Num_Points; i++)
+    {
+	int o = Orbits[i];
+	grid_fill_cell(i, orbit_color[o]);
+    }
+
 }
 void plane_draw_Orbits_grouped()
 {
@@ -209,6 +218,14 @@ void plane_draw_Orbits_grouped()
 	    orbit_color[o] = rand() & 0xffffff;
 	grid_fill_cell(new_Pos[i], orbit_color[o]);
     }
+
+    /* for(int i=2; i<Orbit_count; i+=2) */
+    /* 	orbit_color[i-1] = orbit_color[i]; */
+    /* for(int i=0; i<Num_Points; i++) */
+    /* { */
+    /* 	int o = Orbits[i]; */
+    /* 	grid_fill_cell(new_Pos[i], orbit_color[o]); */
+    /* } */
     grid_save("orbits", 0);
 }
 

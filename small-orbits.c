@@ -71,6 +71,13 @@ void search()
     printf("count: %ld\n\n", count);
 }
 
+int mylog2(long x)
+{
+    long a = 1; int ans = 0;
+    while(a <= x) { a = a * 2; ans++; }
+    return ans - 1;
+}
+
 int main()
 {
     size = 0;
@@ -106,6 +113,9 @@ int main()
     printf("\n\n");
 
     // search();
+    long count = 9621827072;
+    printf("log test: %d\n\n", mylog2(8));
+    printf("log count: %d\n\n", mylog2(count));
 
     printf("\n\n  thikache\n\n");
     return 0;
